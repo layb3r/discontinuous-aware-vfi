@@ -24,6 +24,7 @@ class LayerNorm2d(nn.Module):
         x = self.weight[:, None, None] * x + self.bias[:, None, None]
         return x
 
+
 class MaskDecoder(nn.Module):
     def __init__(
         self,
