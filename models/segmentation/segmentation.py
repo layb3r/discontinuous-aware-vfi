@@ -3,11 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
-from .image_encoder import TinyViT
-from .prompt_encoder import PromptEncoder
-from .mask_decoder import MaskDecoder
+from image_encoder import TinyViT
+from prompt_encoder import PromptEncoder
+from mask_decoder import MaskDecoder
 
 class GODetector:
     def __init__(self, yolo_weights_path, tracker_config_path, yolo_config=None):
@@ -26,6 +26,7 @@ class GODetector:
         """Convert tensor (C,H,W) → uint8 numpy (H,W,C)"""
         return (img.permute(1, 2, 0).cpu().numpy() * 255).astype(np.uint8)
 
+    @torch.no_grad()
     def _process_pair(self, pair):
         frame1, frame2 = pair
 
@@ -165,10 +166,11 @@ class GOSeg(nn.Module):
                 pixel_std: List[float] = [58.395, 57.12, 57.375],
                 yolo_weights_path = "./weights/detector.pt", 
                 tracker_config_path = "./botsort.yaml", 
-                yolo_config = None
+                yolo_config = None,
+                use_detector: bool = True,
             ):
         super().__init__()
-        self.detector = GODetector(yolo_weights_path, tracker_config_path, yolo_config)
+        self.detector = GODetector(yolo_weights_path, tracker_config_path, yolo_config) if use_detector else None
         self.image_encoder = image_encoder
         self.prompt_encoder = prompt_encoder
         self.mask_decoder = mask_decoder
@@ -179,14 +181,53 @@ class GOSeg(nn.Module):
     def device(self) -> Any:
         return self.pixel_mean.device
 
+    # def preprocess(self, x: torch.Tensor) -> torch.Tensor:
+    #     """Normalize pixel values and pad to a square input."""
+    #     x = (x - self.pixel_mean) / self.pixel_std
+    #     h, w = x.shape[-2:]
+    #     padh = self.image_encoder.img_size - h
+    #     padw = self.image_encoder.img_size - w
+    #     x = F.pad(x, (0, padw, 0, padh))
+    #     return x
+
     def preprocess(self, x: torch.Tensor) -> torch.Tensor:
-        """Normalize pixel values and pad to a square input."""
-        x = (x - self.pixel_mean) / self.pixel_std
+        """Resize-longest-side, normalize pixel values, and pad to square."""
         h, w = x.shape[-2:]
-        padh = self.image_encoder.img_size - h
-        padw = self.image_encoder.img_size - w
+        new_h, new_w = self._get_preprocess_shape(h, w, self.image_encoder.img_size)
+        if (new_h, new_w) != (h, w):
+            x = F.interpolate(
+                x.unsqueeze(0),
+                size=(new_h, new_w),
+                mode="bilinear",
+                align_corners=False,
+                antialias=True,
+            ).squeeze(0)
+
+        x = (x - self.pixel_mean) / self.pixel_std
+        padh = self.image_encoder.img_size - new_h
+        padw = self.image_encoder.img_size - new_w
         x = F.pad(x, (0, padw, 0, padh))
         return x
+
+    def _get_preprocess_shape(self, old_h: int, old_w: int, long_side_length: int) -> Tuple[int, int]:
+        scale = long_side_length * 1.0 / max(old_h, old_w)
+        new_h = int(old_h * scale + 0.5)
+        new_w = int(old_w * scale + 0.5)
+        return new_h, new_w
+
+    def apply_coords_torch(self, coords: torch.Tensor, original_size: Tuple[int, int]) -> torch.Tensor:
+        """Transform coordinates from original image size to preprocessed size."""
+        old_h, old_w = original_size
+        new_h, new_w = self._get_preprocess_shape(old_h, old_w, self.image_encoder.img_size)
+        coords = coords.clone().to(torch.float32)
+        coords[..., 0] = coords[..., 0] * (new_w / old_w)
+        coords[..., 1] = coords[..., 1] * (new_h / old_h)
+        return coords
+
+    def apply_boxes_torch(self, boxes: torch.Tensor, original_size: Tuple[int, int]) -> torch.Tensor:
+        """Transform boxes from original image size to preprocessed size."""
+        boxes = self.apply_coords_torch(boxes.reshape(-1, 2, 2), original_size)
+        return boxes.reshape(-1, 4)
 
     def postprocess_masks(
         self,
@@ -221,14 +262,19 @@ class GOSeg(nn.Module):
                 "low_res_logits": torch.zeros((0, num_masks, 256, 256), dtype=torch.float32, device=frame.device),
             }
 
+        original_size = tuple(frame.shape[-2:])
+        transformed_boxes = self.apply_boxes_torch(boxes, original_size=original_size)
+
         input_image = self.preprocess(frame).unsqueeze(0)
         image_embeddings = self.image_encoder(input_image)
 
         sparse_embeddings, dense_embeddings = self.prompt_encoder(
             points=None,
-            boxes=boxes,
+            boxes=transformed_boxes,
             masks=None,
         )
+
+        input_size = self._get_preprocess_shape(original_size[0], original_size[1], self.image_encoder.img_size)
 
         low_res_masks, iou_predictions = self.mask_decoder(
             image_embeddings=image_embeddings,
@@ -240,8 +286,8 @@ class GOSeg(nn.Module):
 
         masks = self.postprocess_masks(
             low_res_masks,
-            input_size=frame.shape[-2:],
-            original_size=frame.shape[-2:],
+            input_size=input_size,
+            original_size=original_size,
         )
         masks = masks > self.mask_threshold
 
@@ -251,36 +297,92 @@ class GOSeg(nn.Module):
             "low_res_logits": low_res_masks,
         }
 
-    @torch.no_grad()
-    def forward(self, frame1_batch, frame2_batch, multimask_output: bool):
-        paired_boxes, paired_valid, paired_ids, _, _ = self.detector.forward(frame1_batch, frame2_batch)
+    def forward(
+        self,
+        frame1_batch,
+        frame2_batch,
+        multimask_output: bool,
+        paired_boxes: Optional[torch.Tensor] = None,
+        paired_valid: Optional[torch.Tensor] = None,
+        paired_ids: Optional[torch.Tensor] = None,
+    ):
+        if paired_boxes is None or paired_valid is None or paired_ids is None:
+            if self.detector is None:
+                raise ValueError(
+                    "paired_boxes, paired_valid, and paired_ids must be provided when detector is disabled."
+                )
+            paired_boxes, paired_valid, paired_ids, _, _ = self.detector.forward(frame1_batch, frame2_batch)
+        else:
+            paired_boxes = paired_boxes.to(device=frame1_batch.device, dtype=torch.float32)
+            paired_valid = paired_valid.to(device=frame1_batch.device, dtype=torch.bool)
+            paired_ids = paired_ids.to(device=frame1_batch.device, dtype=torch.long)
 
         frame1_outputs = []
         frame2_outputs = []
+        paired_outputs = []
 
         for b in range(frame1_batch.shape[0]):
             frame1_boxes = paired_boxes[b, paired_valid[b, :, 0], 0, :]
             frame2_boxes = paired_boxes[b, paired_valid[b, :, 1], 1, :]
 
-            frame1_outputs.append(
-                self._segment_with_boxes(
-                    frame=frame1_batch[b],
-                    boxes=frame1_boxes,
-                    multimask_output=multimask_output,
-                )
+            frame1_output = self._segment_with_boxes(
+                frame=frame1_batch[b],
+                boxes=frame1_boxes,
+                multimask_output=multimask_output,
             )
-            frame2_outputs.append(
-                self._segment_with_boxes(
-                    frame=frame2_batch[b],
-                    boxes=frame2_boxes,
-                    multimask_output=multimask_output,
-                )
+
+            frame2_output = self._segment_with_boxes(
+                frame=frame2_batch[b],
+                boxes=frame2_boxes,
+                multimask_output=multimask_output,
             )
+
+            frame1_outputs.append(frame1_output)
+            frame2_outputs.append(frame2_output)
+
+            # Rebuild per-track alignment so each output entry maps to paired_boxes/paired_ids.
+            per_pair_outputs = []
+            frame1_idx = 0
+            frame2_idx = 0
+
+            for i in range(paired_boxes.shape[1]):
+                track_id = int(paired_ids[b, i].item())
+                if track_id < 0:
+                    continue
+
+                pair_item = {
+                    "id": track_id,
+                    "frame1": None,
+                    "frame2": None,
+                }
+
+                if bool(paired_valid[b, i, 0].item()):
+                    pair_item["frame1"] = {
+                        "box": paired_boxes[b, i, 0],
+                        "masks": frame1_output["masks"][frame1_idx],
+                        "iou_predictions": frame1_output["iou_predictions"][frame1_idx],
+                        "low_res_logits": frame1_output["low_res_logits"][frame1_idx],
+                    }
+                    frame1_idx += 1
+
+                if bool(paired_valid[b, i, 1].item()):
+                    pair_item["frame2"] = {
+                        "box": paired_boxes[b, i, 1],
+                        "masks": frame2_output["masks"][frame2_idx],
+                        "iou_predictions": frame2_output["iou_predictions"][frame2_idx],
+                        "low_res_logits": frame2_output["low_res_logits"][frame2_idx],
+                    }
+                    frame2_idx += 1
+
+                per_pair_outputs.append(pair_item)
+
+            paired_outputs.append(per_pair_outputs)
 
         return {
             "paired_boxes": paired_boxes,
             "paired_valid": paired_valid,
             "paired_ids": paired_ids,
+            "paired_outputs": paired_outputs,
             "frame1_outputs": frame1_outputs,
             "frame2_outputs": frame2_outputs,
         }
