@@ -1,0 +1,2470 @@
+{
+  "split": "train",
+  "source_rel": "00001/0001",
+  "scenechange": null,
+  "composite_profile": {
+    "scope": "per_overlay",
+    "overlay_count_target": 8,
+    "overlay_count_placed": 8
+  },
+  "tasks": {
+    "segmentation": {
+      "description": "input is augmented I, output is tracked masks, loss against augmented masks",
+      "input_frames": [
+        "I0.png",
+        "I_0.5.png",
+        "I1.png"
+      ],
+      "aggregate_masks": {
+        "I0": "aggregate_masks/M0.png",
+        "I_0.5": "aggregate_masks/M05.png",
+        "I1": "aggregate_masks/M1.png",
+        "I_0.5_copied": "aggregate_masks/M05_copied.png"
+      },
+      "tracked_masks": [
+        {
+          "object_id": "001",
+          "masks": {
+            "I0": "overlays_masks/001_I0.png",
+            "I_0.5": "overlays_masks/001_I_0.5.png",
+            "I1": "overlays_masks/001_I1.png",
+            "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "002",
+          "masks": {
+            "I0": "overlays_masks/002_I0.png",
+            "I_0.5": "overlays_masks/002_I_0.5.png",
+            "I1": "overlays_masks/002_I1.png",
+            "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "007",
+          "masks": {
+            "I0": "overlays_masks/007_I0.png",
+            "I_0.5": "overlays_masks/007_I_0.5.png",
+            "I1": "overlays_masks/007_I1.png",
+            "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "004",
+          "masks": {
+            "I0": "overlays_masks/004_I0.png",
+            "I_0.5": "overlays_masks/004_I_0.5.png",
+            "I1": "overlays_masks/004_I1.png",
+            "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "006",
+          "masks": {
+            "I0": "overlays_masks/006_I0.png",
+            "I_0.5": "overlays_masks/006_I_0.5.png",
+            "I1": "overlays_masks/006_I1.png",
+            "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "000",
+          "masks": {
+            "I0": "overlays_masks/000_I0.png",
+            "I_0.5": "overlays_masks/000_I_0.5.png",
+            "I1": "overlays_masks/000_I1.png",
+            "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "003",
+          "masks": {
+            "I0": "overlays_masks/003_I0.png",
+            "I_0.5": "overlays_masks/003_I_0.5.png",
+            "I1": "overlays_masks/003_I1.png",
+            "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "005",
+          "masks": {
+            "I0": "overlays_masks/005_I0.png",
+            "I_0.5": "overlays_masks/005_I_0.5.png",
+            "I1": "overlays_masks/005_I1.png",
+            "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+          }
+        }
+      ]
+    },
+    "classification": {
+      "description": "input is two positioned endpoint masks, output is discontinuity 0/1",
+      "samples": [
+        {
+          "object_id": "001",
+          "mask_pair": [
+            "overlays_masks/001_I0.png",
+            "overlays_masks/001_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "002",
+          "mask_pair": [
+            "overlays_masks/002_I0.png",
+            "overlays_masks/002_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "change_appearance"
+        },
+        {
+          "object_id": "007",
+          "mask_pair": [
+            "overlays_masks/007_I0.png",
+            "overlays_masks/007_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "004",
+          "mask_pair": [
+            "overlays_masks/004_I0.png",
+            "overlays_masks/004_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "006",
+          "mask_pair": [
+            "overlays_masks/006_I0.png",
+            "overlays_masks/006_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "000",
+          "mask_pair": [
+            "overlays_masks/000_I0.png",
+            "overlays_masks/000_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "003",
+          "mask_pair": [
+            "overlays_masks/003_I0.png",
+            "overlays_masks/003_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "change_appearance"
+        },
+        {
+          "object_id": "005",
+          "mask_pair": [
+            "overlays_masks/005_I0.png",
+            "overlays_masks/005_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "change_appearance"
+        }
+      ]
+    },
+    "refinement": {
+      "description": "input is I_0.5, target is I_0.5_copied",
+      "input_frame": "I_0.5.png",
+      "target_frame": "I_0.5_copied.png"
+    }
+  },
+  "overlays": [
+    {
+      "object_id": "001",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/pha/alarm_clock_a_01_LED_diff.png",
+        "subfolder": "Text/pha"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "bbox05": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "bbox1": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "center0": [
+          -36.0,
+          80.0
+        ],
+        "center05": [
+          -36.0,
+          80.0
+        ],
+        "center1": [
+          -36.0,
+          80.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/001_I0.png",
+        "I_0.5": "overlays_masks/001_I_0.5.png",
+        "I1": "overlays_masks/001_I1.png",
+        "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "002",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 0.85,
+      "alpha05": 0.85,
+      "alpha1": 0.85,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/persona_5_text/0099.png",
+        "subfolder": "Text/persona_5_text"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "bbox05": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "bbox1": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "center0": [
+          168.5,
+          143.0
+        ],
+        "center05": [
+          168.5,
+          143.0
+        ],
+        "center1": [
+          168.5,
+          143.0
+        ]
+      },
+      "transparent": {
+        "enabled": true,
+        "alpha_scales": {
+          "I0": 0.85,
+          "I_0.5": 0.85,
+          "I1": 0.85,
+          "I_0.5_copied": 0.85
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "nonfont_text_change",
+              "text_transition_mode": "text_to_text",
+              "text_before": "G?ZAV6RO62",
+              "text_after": "Y&HXNI%3J0",
+              "text_font": "Font/group_05/Assistant__Assistant-Bold.ttf",
+              "text_fill": [
+                255,
+                255,
+                255
+              ],
+              "text_stroke_width": 2
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/002_I0.png",
+        "I_0.5": "overlays_masks/002_I_0.5.png",
+        "I1": "overlays_masks/002_I1.png",
+        "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "007",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/twemoji_iconic/1f494.png",
+        "subfolder": "Symbol/twemoji_iconic"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "bbox05": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "bbox1": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "center0": [
+          366.0,
+          52.0
+        ],
+        "center05": [
+          366.0,
+          52.0
+        ],
+        "center1": [
+          366.0,
+          52.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/007_I0.png",
+        "I_0.5": "overlays_masks/007_I_0.5.png",
+        "I1": "overlays_masks/007_I1.png",
+        "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "004",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/celeste_languages/french.png",
+        "subfolder": "Text/celeste_languages"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "bbox05": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "bbox1": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "center0": [
+          387.0,
+          264.5
+        ],
+        "center05": [
+          387.0,
+          264.5
+        ],
+        "center1": [
+          387.0,
+          264.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/004_I0.png",
+        "I_0.5": "overlays_masks/004_I_0.5.png",
+        "I1": "overlays_masks/004_I1.png",
+        "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "006",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          0.8719162940979004,
+          0.0,
+          0.7198581695556641
+        ],
+        [
+          0.0,
+          0.8719162940979004,
+          20.822708129882812
+        ]
+      ],
+      "B": [
+        [
+          1.172194242477417,
+          0.0,
+          -9.299432754516602
+        ],
+        [
+          0.0,
+          1.172194242477417,
+          -36.96971130371094
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/twemoji_human/1f9cf-1f3fc.png",
+        "subfolder": "Symbol/twemoji_human"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "scale"
+          ],
+          "end_scale": 0.7438326069505052
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            0.8719162940979004,
+            0.0,
+            0.7198581695556641
+          ],
+          [
+            0.0,
+            0.8719162940979004,
+            20.822708129882812
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.172194242477417,
+            0.0,
+            -9.299432754516602
+          ],
+          [
+            0.0,
+            1.172194242477417,
+            -36.96971130371094
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.7438325881958008,
+            0.0,
+            8.547466278076172
+          ],
+          [
+            0.0,
+            0.7438325881958008,
+            49.302757263183594
+          ]
+        ],
+        "bbox0": [
+          4,
+          168,
+          134,
+          297
+        ],
+        "bbox05": [
+          4,
+          168,
+          118,
+          280
+        ],
+        "bbox1": [
+          4,
+          168,
+          118,
+          280
+        ],
+        "center0": [
+          69.0,
+          232.5
+        ],
+        "center05": [
+          61.0,
+          224.0
+        ],
+        "center1": [
+          61.0,
+          224.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/006_I0.png",
+        "I_0.5": "overlays_masks/006_I_0.5.png",
+        "I1": "overlays_masks/006_I1.png",
+        "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "000",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/oni/The_Frosty_Planet_Pack.png",
+        "subfolder": "Text/oni"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "bbox05": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "bbox1": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "center0": [
+          472.5,
+          132.5
+        ],
+        "center05": [
+          472.5,
+          132.5
+        ],
+        "center1": [
+          472.5,
+          132.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/000_I0.png",
+        "I_0.5": "overlays_masks/000_I_0.5.png",
+        "I1": "overlays_masks/000_I1.png",
+        "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "003",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          -2.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Font",
+        "class_weight": 0.05,
+        "source_rel": "Font/pha/dogicabold.ttf",
+        "subfolder": "Font/pha"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            -2.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ]
+        ],
+        "bbox0": [
+          123,
+          95,
+          278,
+          141
+        ],
+        "bbox05": [
+          123,
+          95,
+          278,
+          141
+        ],
+        "bbox1": [
+          123,
+          95,
+          280,
+          144
+        ],
+        "center0": [
+          200.5,
+          118.0
+        ],
+        "center05": [
+          200.5,
+          118.0
+        ],
+        "center1": [
+          201.5,
+          119.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "font_text_to_text",
+              "text_transition_mode": "text_to_text",
+              "text_before": "0RU?T0RX",
+              "text_after": "VL1NTEH%"
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/003_I0.png",
+        "I_0.5": "overlays_masks/003_I_0.5.png",
+        "I1": "overlays_masks/003_I1.png",
+        "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "005",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/persona_5/element_93.png",
+        "subfolder": "Symbol/persona_5"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "bbox05": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "bbox1": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "center0": [
+          200.5,
+          247.5
+        ],
+        "center05": [
+          200.5,
+          247.5
+        ],
+        "center1": [
+          200.5,
+          247.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "nonfont_text_change",
+              "text_transition_mode": "text_to_text",
+              "text_before": "@7Y9",
+              "text_after": "@S@2",
+              "text_font": "Font/group_05/Fira_Sans__FiraSans-Medium.ttf",
+              "text_fill": [
+                255,
+                255,
+                255
+              ],
+              "text_stroke_width": 1
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/005_I0.png",
+        "I_0.5": "overlays_masks/005_I_0.5.png",
+        "I1": "overlays_masks/005_I1.png",
+        "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "object_id": "001",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/pha/alarm_clock_a_01_LED_diff.png",
+        "subfolder": "Text/pha"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "bbox05": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "bbox1": [
+          -131,
+          49,
+          59,
+          111
+        ],
+        "center0": [
+          -36.0,
+          80.0
+        ],
+        "center05": [
+          -36.0,
+          80.0
+        ],
+        "center1": [
+          -36.0,
+          80.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/001_I0.png",
+        "I_0.5": "overlays_masks/001_I_0.5.png",
+        "I1": "overlays_masks/001_I1.png",
+        "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "002",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 0.85,
+      "alpha05": 0.85,
+      "alpha1": 0.85,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/persona_5_text/0099.png",
+        "subfolder": "Text/persona_5_text"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "bbox05": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "bbox1": [
+          154,
+          121,
+          183,
+          165
+        ],
+        "center0": [
+          168.5,
+          143.0
+        ],
+        "center05": [
+          168.5,
+          143.0
+        ],
+        "center1": [
+          168.5,
+          143.0
+        ]
+      },
+      "transparent": {
+        "enabled": true,
+        "alpha_scales": {
+          "I0": 0.85,
+          "I_0.5": 0.85,
+          "I1": 0.85,
+          "I_0.5_copied": 0.85
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "nonfont_text_change",
+              "text_transition_mode": "text_to_text",
+              "text_before": "G?ZAV6RO62",
+              "text_after": "Y&HXNI%3J0",
+              "text_font": "Font/group_05/Assistant__Assistant-Bold.ttf",
+              "text_fill": [
+                255,
+                255,
+                255
+              ],
+              "text_stroke_width": 2
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/002_I0.png",
+        "I_0.5": "overlays_masks/002_I_0.5.png",
+        "I1": "overlays_masks/002_I1.png",
+        "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "007",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/twemoji_iconic/1f494.png",
+        "subfolder": "Symbol/twemoji_iconic"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "bbox05": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "bbox1": [
+          344,
+          31,
+          388,
+          73
+        ],
+        "center0": [
+          366.0,
+          52.0
+        ],
+        "center05": [
+          366.0,
+          52.0
+        ],
+        "center1": [
+          366.0,
+          52.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/007_I0.png",
+        "I_0.5": "overlays_masks/007_I_0.5.png",
+        "I1": "overlays_masks/007_I1.png",
+        "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "004",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/celeste_languages/french.png",
+        "subfolder": "Text/celeste_languages"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "bbox05": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "bbox1": [
+          267,
+          237,
+          507,
+          292
+        ],
+        "center0": [
+          387.0,
+          264.5
+        ],
+        "center05": [
+          387.0,
+          264.5
+        ],
+        "center1": [
+          387.0,
+          264.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/004_I0.png",
+        "I_0.5": "overlays_masks/004_I_0.5.png",
+        "I1": "overlays_masks/004_I1.png",
+        "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "006",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          0.8719162940979004,
+          0.0,
+          0.7198581695556641
+        ],
+        [
+          0.0,
+          0.8719162940979004,
+          20.822708129882812
+        ]
+      ],
+      "B": [
+        [
+          1.172194242477417,
+          0.0,
+          -9.299432754516602
+        ],
+        [
+          0.0,
+          1.172194242477417,
+          -36.96971130371094
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/twemoji_human/1f9cf-1f3fc.png",
+        "subfolder": "Symbol/twemoji_human"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "scale"
+          ],
+          "end_scale": 0.7438326069505052
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            0.8719162940979004,
+            0.0,
+            0.7198581695556641
+          ],
+          [
+            0.0,
+            0.8719162940979004,
+            20.822708129882812
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.172194242477417,
+            0.0,
+            -9.299432754516602
+          ],
+          [
+            0.0,
+            1.172194242477417,
+            -36.96971130371094
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.7438325881958008,
+            0.0,
+            8.547466278076172
+          ],
+          [
+            0.0,
+            0.7438325881958008,
+            49.302757263183594
+          ]
+        ],
+        "bbox0": [
+          4,
+          168,
+          134,
+          297
+        ],
+        "bbox05": [
+          4,
+          168,
+          118,
+          280
+        ],
+        "bbox1": [
+          4,
+          168,
+          118,
+          280
+        ],
+        "center0": [
+          69.0,
+          232.5
+        ],
+        "center05": [
+          61.0,
+          224.0
+        ],
+        "center1": [
+          61.0,
+          224.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/006_I0.png",
+        "I_0.5": "overlays_masks/006_I_0.5.png",
+        "I1": "overlays_masks/006_I1.png",
+        "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "000",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/oni/The_Frosty_Planet_Pack.png",
+        "subfolder": "Text/oni"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "bbox05": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "bbox1": [
+          388,
+          78,
+          557,
+          187
+        ],
+        "center0": [
+          472.5,
+          132.5
+        ],
+        "center05": [
+          472.5,
+          132.5
+        ],
+        "center1": [
+          472.5,
+          132.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/000_I0.png",
+        "I_0.5": "overlays_masks/000_I_0.5.png",
+        "I1": "overlays_masks/000_I1.png",
+        "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "003",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          -2.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Font",
+        "class_weight": 0.05,
+        "source_rel": "Font/pha/dogicabold.ttf",
+        "subfolder": "Font/pha"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            -2.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            2.0
+          ]
+        ],
+        "bbox0": [
+          123,
+          95,
+          278,
+          141
+        ],
+        "bbox05": [
+          123,
+          95,
+          278,
+          141
+        ],
+        "bbox1": [
+          123,
+          95,
+          280,
+          144
+        ],
+        "center0": [
+          200.5,
+          118.0
+        ],
+        "center05": [
+          200.5,
+          118.0
+        ],
+        "center1": [
+          201.5,
+          119.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "font_text_to_text",
+              "text_transition_mode": "text_to_text",
+              "text_before": "0RU?T0RX",
+              "text_after": "VL1NTEH%"
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/003_I0.png",
+        "I_0.5": "overlays_masks/003_I_0.5.png",
+        "I1": "overlays_masks/003_I1.png",
+        "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "005",
+      "mode": "change_appearance",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/persona_5/element_93.png",
+        "subfolder": "Symbol/persona_5"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "bbox05": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "bbox1": [
+          152,
+          224,
+          249,
+          271
+        ],
+        "center0": [
+          200.5,
+          247.5
+        ],
+        "center05": [
+          200.5,
+          247.5
+        ],
+        "center1": [
+          200.5,
+          247.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "textual",
+          "components": [
+            "textual"
+          ],
+          "component_details": [
+            {
+              "variant": "textual",
+              "textual_variant": "nonfont_text_change",
+              "text_transition_mode": "text_to_text",
+              "text_before": "@7Y9",
+              "text_after": "@S@2",
+              "text_font": "Font/group_05/Fira_Sans__FiraSans-Medium.ttf",
+              "text_fill": [
+                255,
+                255,
+                255
+              ],
+              "text_stroke_width": 1
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/005_I0.png",
+        "I_0.5": "overlays_masks/005_I_0.5.png",
+        "I1": "overlays_masks/005_I1.png",
+        "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+      }
+    }
+  ]
+}
