@@ -209,7 +209,8 @@ class FlowEstimator(nn.Module):
 
         flow_0t = last_flow[:N] * time_period
         flow_1t = last_flow[N:] * (1 - time_period)
-        return torch.cat([flow_0t, flow_1t], dim=1)/4.
+        return torch.cat([flow_0t, flow_1t], dim=1)/4., torch.cat([last_flow[:N], last_flow[N:]], dim=1)/4.
 
     def forward(self, img0, img1, time_period, flownet_deep = None, skip_num = 0):
-        return self.get_flow(img0, img1, time_period, flownet_deep, skip_num)
+        flow, original_flow = self.get_flow(img0, img1, time_period, flownet_deep, skip_num)
+        return flow, original_flow
