@@ -11,6 +11,72 @@ from torch.utils.data import DataLoader, Dataset
 
 cv2.setNumThreads(0)
 
+class AugVimeo(Dataset):
+    def __init__(self, data_root):
+        self.data_root = data_root
+        self.sample_dirs = self._collect_samples()
+
+    def _collect_samples(self):
+        required_files = ("I0.png", "I1.png", "I_0.5_copied.png")
+        sample_dirs = []
+
+        for root, _, files in os.walk(self.data_root):
+            file_set = set(files)
+            if not all(name in file_set for name in required_files):
+                continue
+
+            masks_dir = os.path.join(root, "aggregate_masks")
+            if not os.path.isfile(os.path.join(masks_dir, "M0.png")):
+                continue
+            if not os.path.isfile(os.path.join(masks_dir, "M1.png")):
+                continue
+
+            sample_dirs.append(root)
+
+        sample_dirs.sort()
+        if len(sample_dirs) == 0:
+            raise RuntimeError(
+                f"No AugVimeo samples found under {self.data_root}. Expected folders containing I0.png, I1.png, I_0.5_copied.png and aggregate_masks/M0.png, M1.png."
+            )
+
+        return sample_dirs
+
+    @staticmethod
+    def _read_image(path):
+        image = cv2.imread(path, cv2.IMREAD_COLOR)
+        if image is None:
+            raise FileNotFoundError(f"Could not read image: {path}")
+        return torch.from_numpy(image.copy()).permute(2, 0, 1)
+
+    @staticmethod
+    def _read_mask(path):
+        mask = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+        if mask is None:
+            raise FileNotFoundError(f"Could not read mask: {path}")
+        mask = (mask > 0).astype(np.float32)
+        return torch.from_numpy(mask).unsqueeze(0)
+
+    def __len__(self):
+        return len(self.sample_dirs)
+
+    def __getitem__(self, index):
+        sample_dir = self.sample_dirs[index]
+        masks_dir = os.path.join(sample_dir, "aggregate_masks")
+
+        sample = {
+            "sample_dir": sample_dir,
+            "I0": self._read_image(os.path.join(sample_dir, "I0.png")),
+            "I1": self._read_image(os.path.join(sample_dir, "I1.png")),
+            "gt": self._read_image(os.path.join(sample_dir, "I_0.5_copied.png")),
+            "M0": self._read_mask(os.path.join(masks_dir, "M0.png")),
+            "M1": self._read_mask(os.path.join(masks_dir, "M1.png")),
+        }
+        img0 = sample["I0"]
+        img1 = sample["I1"]
+        gt = sample["gt"]
+        
+        return torch.cat((img0, img1, gt), 0)
+
 class SnuFilm_bak(Dataset):
     def __init__(self, data_root, data_type="extreme"):
         self.data_root = data_root

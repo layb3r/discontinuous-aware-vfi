@@ -1,15 +1,35 @@
-FlowEstimator(img0, img1) -> flow, flow_bg (inpaint flow from masking out union of masks of objects in 2 frames to get flow_bg)
+# Inputs
+I0, I1                  # [B, 3, H, W]
+F01, F10                # [B, 2, H, W] optical flows (from pretrained flow estimator)
+M0, M1                  # [B, 1, H, W] temporal instance masks (integers, 0 = bg)
+t                       # scalar in [0, 1]
 
-M0: mask of objects in img0
-M1: mask of objects in img1
-M = M0 | M1
+# Step 1: Occlusion masks
+M_xor = ((M0 > 0) ^ (M1 > 0)).float()          # appearing OR disappearing
+A     = ((M0 == 0) & (M1 > 0)).float()         # appearing in I1
+D     = ((M0 > 0) & (M1 == 0)).float()         # disappearing in I0
 
-warp(img0, flow_01.tt) -> img0_warped
-warp(img0, flow_bg.t.(M0 XOR M)) -> img0_warped_bg
-warp(img1, flow_10.(1-t)) -> img1_warped
+# Step 2: Targeted background flow completion
+F01_masked = F01 * (1 - M_xor)
+F10_masked = F10 * (1 - M_xor)
+F01_bg = flow_completion(F01_masked, mask=M_xor)
+F10_bg = flow_completion(F10_masked, mask=M_xor)
 
-warped_feature = Ehead_warp(concat(img0_warped, img1_warped))
+# Step 3: Corrected flows
+F01_corr = F01_bg * (1 - D)          # appearing fix already in F01_bg; zero out disappearing
+F10_corr = F10_bg * (1 - A)          # disappearing fix already in F10_bg; zero out appearing
 
-I_copied = I0 M + warped_feature (1 - M)
-M_aligned = M0 XOR M (align background in img0)
-I_aligned = I_copied (1 - M_aligned) + img0_warped_bg (M_aligned)
+[can package step 1 -> step 3 as a disentangled flow refinement module used in another VFI pipeline.]
+
+# Step 4: Forward softmax splatting to time t
+I0_t = soft_splat(I0, t * F01_corr)          # [B, 3, H, W]
+I1_t = soft_splat(I1, (1 - t) * F10_corr)
+
+from I0_t, I1_t -> generate I_base
+
+# Step 5: Persistent overlay conditioning (texture prior)
+# Warp original I0 texture only on persistent regions (using original flow)
+M_pair = ((M0 > 0) & (M1 > 0)).float()         # persistent overlays
+I0_paired = soft_splat(I0, t * F01)
+
+return It
