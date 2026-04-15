@@ -42,16 +42,17 @@ def get_deep_skip(img):
     return flow_deep, skip_num
 
 # flow inferene test
-def flow(img0_path, img1_path, model_path='flow_estimator.pth'):
+def flow(img0_path, img1_path, model_path='./weights/flow_estimator.pth'):
     model = FlowEstimator()
+    model.to('cuda')
     model.load_state_dict(torch.load(model_path)["state_dict"])
     model.eval()
 
     img0 = cv2.imread(img0_path)[:, :, ::-1]
     img1 = cv2.imread(img1_path)[:, :, ::-1]
 
-    img0 = (torch.from_numpy(img0.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to('cpu')
-    img1 = (torch.from_numpy(img1.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to('cpu')
+    img0 = (torch.from_numpy(img0.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to('cuda')
+    img1 = (torch.from_numpy(img1.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to('cuda')
 
     n, c, h, w = img1.shape
     flow_deep, skip_num = get_deep_skip(img1)
@@ -75,4 +76,4 @@ def flow(img0_path, img1_path, model_path='flow_estimator.pth'):
 if __name__ == "__main__":
     # load_pkl('flow_estimator.pth')
     # load_pkl('UPR_ReDesgin.pkl')
-    flow('dataset\\0001\\I0.png', 'dataset\\0001\\I1.png')
+    flow('dataset/0001/I0.png', 'dataset/0001/I1.png')
