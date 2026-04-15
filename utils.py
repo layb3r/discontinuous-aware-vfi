@@ -142,7 +142,7 @@ def calc_ssim(img1, img2):
 
 def calc_psnr_and_ssim(sr, hr):
     ### args:
-        # sr: pytorch tensor, range [-1, 1]
+        # sr: pytorch tensor, range [-1, 1] 
         # hr: pytorch tensor, range [-1, 1]
 
     ### prepare data

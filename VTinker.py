@@ -5,6 +5,7 @@ from softsplat import softsplat
 from utils import correlation
 from helper import ResidualBlock, NonLocalBlock, DownSampleBlock, UpSampleBlock, GroupNorm, Swish
 import math
+import cv2
 
 def resize(x, scale_factor):
     return F.interpolate(x, scale_factor=scale_factor, mode="bilinear", align_corners=False)
@@ -394,7 +395,7 @@ class TBVFI(nn.Module):
         flow_1t = flow4x[:, 2:4].contiguous()
         warped_img0 = softsplat.FunctionSoftsplat(
                 tenInput=img0, tenFlow=flow_0t,
-                tenMetric=None, strType='average')
+                tenMetric=None, strType='average')  
         warped_img1 = softsplat.FunctionSoftsplat(
                 tenInput=img1, tenFlow=flow_1t,
                 tenMetric=None, strType='average')
@@ -425,6 +426,10 @@ class TBVFI(nn.Module):
         warped_img1 = softsplat.FunctionSoftsplat(
                 tenInput=img1, tenFlow=flow_1t,
                 tenMetric=None, strType='average')
+        
+        # cv2.imwrite('warped_img0.png', (warped_img0[0] * (255.)).permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
+        # cv2.imwrite('warped_img1.png', (warped_img1[0] * (255.)).permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
+
         warped_feature = self.Ehead_warp(torch.cat([warped_img0, warped_img1], dim=1))
         Q = self.lite_net(warped_feature)
         V0 = self.Ehead_img(img0)
@@ -438,7 +443,7 @@ class TBVFI(nn.Module):
 
         out = self.mid_net(It_feat)
 
-        return out
+        return out, warped_feature
     
 class Up_sample_module(nn.Module):
     def __init__(self, hid_channel = 32):
@@ -537,5 +542,8 @@ class modelVFI(nn.Module):
     def inference(self, img0, img1, time_period, flownet_deep = None, skip_num = 0):
         with torch.no_grad():
             flow = self.get_flow(img0, img1, time_period, flownet_deep, skip_num)
-            out = self.main_model.inference(img0, img1, flow)
-        return out
+            out, warped_feature = self.main_model.inference(img0, img1, flow)
+
+        print(warped_feature.shape)
+        print(out.shape)
+        return out, warped_feature
