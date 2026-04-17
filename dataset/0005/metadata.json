@@ -1,0 +1,3300 @@
+{
+  "split": "train",
+  "source_rel": "00001/0005",
+  "scenechange": null,
+  "composite_profile": {
+    "scope": "per_overlay",
+    "overlay_count_target": 11,
+    "overlay_count_placed": 11
+  },
+  "tasks": {
+    "segmentation": {
+      "description": "input is augmented I, output is tracked masks, loss against augmented masks",
+      "input_frames": [
+        "I0.png",
+        "I_0.5.png",
+        "I1.png"
+      ],
+      "aggregate_masks": {
+        "I0": "aggregate_masks/M0.png",
+        "I_0.5": "aggregate_masks/M05.png",
+        "I1": "aggregate_masks/M1.png",
+        "I_0.5_copied": "aggregate_masks/M05_copied.png"
+      },
+      "tracked_masks": [
+        {
+          "object_id": "009",
+          "masks": {
+            "I0": "overlays_masks/009_I0.png",
+            "I_0.5": "overlays_masks/009_I_0.5.png",
+            "I1": "overlays_masks/009_I1.png",
+            "I_0.5_copied": "overlays_masks/009_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "008",
+          "masks": {
+            "I0": "overlays_masks/008_I0.png",
+            "I_0.5": "overlays_masks/008_I_0.5.png",
+            "I1": "overlays_masks/008_I1.png",
+            "I_0.5_copied": "overlays_masks/008_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "005",
+          "masks": {
+            "I0": "overlays_masks/005_I0.png",
+            "I_0.5": "overlays_masks/005_I_0.5.png",
+            "I1": "overlays_masks/005_I1.png",
+            "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "007",
+          "masks": {
+            "I0": "overlays_masks/007_I0.png",
+            "I_0.5": "overlays_masks/007_I_0.5.png",
+            "I1": "overlays_masks/007_I1.png",
+            "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "003",
+          "masks": {
+            "I0": "overlays_masks/003_I0.png",
+            "I_0.5": "overlays_masks/003_I_0.5.png",
+            "I1": "overlays_masks/003_I1.png",
+            "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "001",
+          "masks": {
+            "I0": "overlays_masks/001_I0.png",
+            "I_0.5": "overlays_masks/001_I_0.5.png",
+            "I1": "overlays_masks/001_I1.png",
+            "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "004",
+          "masks": {
+            "I0": "overlays_masks/004_I0.png",
+            "I_0.5": "overlays_masks/004_I_0.5.png",
+            "I1": "overlays_masks/004_I1.png",
+            "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "000",
+          "masks": {
+            "I0": "overlays_masks/000_I0.png",
+            "I_0.5": "overlays_masks/000_I_0.5.png",
+            "I1": "overlays_masks/000_I1.png",
+            "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "002",
+          "masks": {
+            "I0": "overlays_masks/002_I0.png",
+            "I_0.5": "overlays_masks/002_I_0.5.png",
+            "I1": "overlays_masks/002_I1.png",
+            "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "006",
+          "masks": {
+            "I0": "overlays_masks/006_I0.png",
+            "I_0.5": "overlays_masks/006_I_0.5.png",
+            "I1": "overlays_masks/006_I1.png",
+            "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+          }
+        },
+        {
+          "object_id": "010",
+          "masks": {
+            "I0": "overlays_masks/010_I0.png",
+            "I_0.5": "overlays_masks/010_I_0.5.png",
+            "I1": "overlays_masks/010_I1.png",
+            "I_0.5_copied": "overlays_masks/010_I_0.5_copied.png"
+          }
+        }
+      ]
+    },
+    "classification": {
+      "description": "input is two positioned endpoint masks, output is discontinuity 0/1",
+      "samples": [
+        {
+          "object_id": "009",
+          "mask_pair": [
+            "overlays_masks/009_I0.png",
+            "overlays_masks/009_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "008",
+          "mask_pair": [
+            "overlays_masks/008_I0.png",
+            "overlays_masks/008_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "005",
+          "mask_pair": [
+            "overlays_masks/005_I0.png",
+            "overlays_masks/005_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "007",
+          "mask_pair": [
+            "overlays_masks/007_I0.png",
+            "overlays_masks/007_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "003",
+          "mask_pair": [
+            "overlays_masks/003_I0.png",
+            "overlays_masks/003_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "001",
+          "mask_pair": [
+            "overlays_masks/001_I0.png",
+            "overlays_masks/001_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "004",
+          "mask_pair": [
+            "overlays_masks/004_I0.png",
+            "overlays_masks/004_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "000",
+          "mask_pair": [
+            "overlays_masks/000_I0.png",
+            "overlays_masks/000_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "002",
+          "mask_pair": [
+            "overlays_masks/002_I0.png",
+            "overlays_masks/002_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "none"
+        },
+        {
+          "object_id": "006",
+          "mask_pair": [
+            "overlays_masks/006_I0.png",
+            "overlays_masks/006_I1.png"
+          ],
+          "label": 1,
+          "temporal_mode": "appear_disappear"
+        },
+        {
+          "object_id": "010",
+          "mask_pair": [
+            "overlays_masks/010_I0.png",
+            "overlays_masks/010_I1.png"
+          ],
+          "label": 0,
+          "temporal_mode": "change_appearance"
+        }
+      ]
+    },
+    "refinement": {
+      "description": "input is I_0.5, target is I_0.5_copied",
+      "input_frame": "I_0.5.png",
+      "target_frame": "I_0.5_copied.png"
+    }
+  },
+  "overlays": [
+    {
+      "object_id": "009",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/celeste_languages/canadian-english.png",
+        "subfolder": "Text/celeste_languages"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "bbox05": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "bbox1": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "center0": [
+          -35.5,
+          218.0
+        ],
+        "center05": [
+          -35.5,
+          218.0
+        ],
+        "center1": [
+          -35.5,
+          218.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/009_I0.png",
+        "I_0.5": "overlays_masks/009_I_0.5.png",
+        "I1": "overlays_masks/009_I1.png",
+        "I_0.5_copied": "overlays_masks/009_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "008",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          0.999308168888092,
+          -0.08076980710029602,
+          4.722572326660156
+        ],
+        [
+          0.03719162940979004,
+          0.9976863265037537,
+          -3.8991947174072266
+        ]
+      ],
+      "B": [
+        [
+          0.9960688948631287,
+          0.08064925670623779,
+          -6.6336212158203125
+        ],
+        [
+          -0.03731219097971916,
+          1.0009255409240723,
+          4.587340354919434
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/rabbit_hole_plain_panel/ui_2300.png",
+        "subfolder": "Panel/rabbit_hole_plain_panel"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "both",
+        "params": {
+          "components": [
+            "rotate",
+            "shear"
+          ],
+          "angle_velocity": 2.131415026567076,
+          "shear_velocity": -0.04360834716502307
+        },
+        "motion_step": [
+          -0.007622109284299401,
+          0.002765309405222867
+        ],
+        "affine_0_to_05": [
+          [
+            0.999308168888092,
+            -0.08076980710029602,
+            4.722572326660156
+          ],
+          [
+            0.03719162940979004,
+            0.9976863265037537,
+            -3.8991947174072266
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9960688948631287,
+            0.08064925670623779,
+            -6.6336212158203125
+          ],
+          [
+            -0.03731219097971916,
+            1.0009255409240723,
+            4.587340354919434
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.9972335696220398,
+            -0.1613072156906128,
+            12.051136016845703
+          ],
+          [
+            0.07433179765939713,
+            0.9907506108283997,
+            -8.029449462890625
+          ]
+        ],
+        "bbox0": [
+          123,
+          88,
+          208,
+          126
+        ],
+        "bbox05": [
+          120,
+          89,
+          204,
+          129
+        ],
+        "bbox1": [
+          116,
+          90,
+          200,
+          130
+        ],
+        "center0": [
+          165.5,
+          107.0
+        ],
+        "center05": [
+          162.0,
+          109.0
+        ],
+        "center1": [
+          158.0,
+          110.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/008_I0.png",
+        "I_0.5": "overlays_masks/008_I_0.5.png",
+        "I1": "overlays_masks/008_I1.png",
+        "I_0.5_copied": "overlays_masks/008_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "005",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/va11_boxed_text/tab4_spr_0.png",
+        "subfolder": "Panel/va11_boxed_text"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "bbox05": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "bbox1": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "center0": [
+          83.0,
+          -28.5
+        ],
+        "center05": [
+          83.0,
+          -28.5
+        ],
+        "center1": [
+          83.0,
+          -28.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/005_I0.png",
+        "I_0.5": "overlays_masks/005_I_0.5.png",
+        "I1": "overlays_masks/005_I1.png",
+        "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "007",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Functional",
+        "class_weight": 0.25,
+        "source_rel": "Functional/freepik_14/element_21.png",
+        "subfolder": "Functional/freepik_14"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "bbox05": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "bbox1": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "center0": [
+          245.5,
+          268.0
+        ],
+        "center05": [
+          245.5,
+          268.0
+        ],
+        "center1": [
+          245.5,
+          268.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/007_I0.png",
+        "I_0.5": "overlays_masks/007_I_0.5.png",
+        "I1": "overlays_masks/007_I1.png",
+        "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "003",
+      "mode": "none",
+      "A": [
+        [
+          1.1451632976531982,
+          0.0,
+          7.9856109619140625
+        ],
+        [
+          0.0,
+          1.1451632976531982,
+          3.9018630981445312
+        ]
+      ],
+      "B": [
+        [
+          0.8874987363815308,
+          0.0,
+          -7.076332092285156
+        ],
+        [
+          0.0,
+          0.8874987363815308,
+          -3.0239219665527344
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/rabbit_hole_fat_number/ui_0139.png",
+        "subfolder": "Text/rabbit_hole_fat_number"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "both",
+        "params": {
+          "components": [
+            "scale"
+          ],
+          "end_scale": 1.2903267047730662
+        },
+        "motion_step": [
+          -0.0003576575725679609,
+          0.026771216354500017
+        ],
+        "affine_0_to_05": [
+          [
+            1.1451632976531982,
+            0.0,
+            7.9856109619140625
+          ],
+          [
+            0.0,
+            1.1451632976531982,
+            3.9018630981445312
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.8874987363815308,
+            0.0,
+            -7.076332092285156
+          ],
+          [
+            0.0,
+            0.8874987363815308,
+            -3.0239219665527344
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.290326714515686,
+            0.0,
+            16.971229553222656
+          ],
+          [
+            0.0,
+            1.290326714515686,
+            7.803707122802734
+          ]
+        ],
+        "bbox0": [
+          -62,
+          57,
+          5,
+          135
+        ],
+        "bbox05": [
+          -62,
+          69,
+          14,
+          159
+        ],
+        "bbox1": [
+          -62,
+          81,
+          24,
+          182
+        ],
+        "center0": [
+          -28.5,
+          96.0
+        ],
+        "center05": [
+          -24.0,
+          114.0
+        ],
+        "center1": [
+          -19.0,
+          131.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/003_I0.png",
+        "I_0.5": "overlays_masks/003_I_0.5.png",
+        "I1": "overlays_masks/003_I1.png",
+        "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "001",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/freepik_10/element_13.png",
+        "subfolder": "Symbol/freepik_10"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "bbox05": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "bbox1": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "center0": [
+          456.5,
+          116.0
+        ],
+        "center05": [
+          456.5,
+          116.0
+        ],
+        "center1": [
+          456.5,
+          116.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/001_I0.png",
+        "I_0.5": "overlays_masks/001_I_0.5.png",
+        "I1": "overlays_masks/001_I1.png",
+        "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "004",
+      "mode": "none",
+      "A": [
+        [
+          1.1026360988616943,
+          0.09621201455593109,
+          -56.2752685546875
+        ],
+        [
+          -0.09621201455593109,
+          1.1026360988616943,
+          9.319656372070312
+        ]
+      ],
+      "B": [
+        [
+          0.9085279703140259,
+          -0.07927484065294266,
+          49.19940185546875
+        ],
+        [
+          0.07927484065294266,
+          0.9085279703140259,
+          -6.3707733154296875
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/mc/tab_item_search.png",
+        "subfolder": "Panel/mc"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "scale",
+            "rotate"
+          ],
+          "angle_velocity": -4.986790891527029,
+          "end_scale": 1.2136513555411501
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.1026360988616943,
+            0.09621201455593109,
+            -56.2752685546875
+          ],
+          [
+            -0.09621201455593109,
+            1.1026360988616943,
+            9.319656372070312
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9085279703140259,
+            -0.07927484065294266,
+            49.19940185546875
+          ],
+          [
+            0.07927484065294266,
+            0.9085279703140259,
+            -6.3707733154296875
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.1953102350234985,
+            0.21019722521305084,
+            -113.72128295898438
+          ],
+          [
+            -0.21019722521305084,
+            1.1953102350234985,
+            27.193084716796875
+          ]
+        ],
+        "bbox0": [
+          323,
+          245,
+          357,
+          269
+        ],
+        "bbox05": [
+          323,
+          245,
+          363,
+          275
+        ],
+        "bbox1": [
+          323,
+          245,
+          369,
+          281
+        ],
+        "center0": [
+          340.0,
+          257.0
+        ],
+        "center05": [
+          343.0,
+          260.0
+        ],
+        "center1": [
+          346.0,
+          263.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/004_I0.png",
+        "I_0.5": "overlays_masks/004_I_0.5.png",
+        "I1": "overlays_masks/004_I1.png",
+        "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "000",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/mns_character/spr_online_avatars_13.png",
+        "subfolder": "Symbol/mns_character"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "bbox05": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "bbox1": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "center0": [
+          233.0,
+          49.0
+        ],
+        "center05": [
+          233.0,
+          49.0
+        ],
+        "center1": [
+          233.0,
+          49.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/000_I0.png",
+        "I_0.5": "overlays_masks/000_I_0.5.png",
+        "I1": "overlays_masks/000_I1.png",
+        "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "002",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/persona_5/element_347.png",
+        "subfolder": "Symbol/persona_5"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "bbox05": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "bbox1": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "center0": [
+          297.5,
+          -23.5
+        ],
+        "center05": [
+          297.5,
+          -23.5
+        ],
+        "center1": [
+          297.5,
+          -23.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/002_I0.png",
+        "I_0.5": "overlays_masks/002_I_0.5.png",
+        "I1": "overlays_masks/002_I1.png",
+        "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "006",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/cc/panelMenu_1.png",
+        "subfolder": "Panel/cc"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "bbox05": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "bbox1": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "center0": [
+          498.5,
+          253.0
+        ],
+        "center05": [
+          498.5,
+          253.0
+        ],
+        "center1": [
+          498.5,
+          253.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/006_I0.png",
+        "I_0.5": "overlays_masks/006_I_0.5.png",
+        "I1": "overlays_masks/006_I1.png",
+        "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "010",
+      "mode": "change_appearance",
+      "A": [
+        [
+          0.9995588064193726,
+          0.02918720245361328,
+          -8.275802612304688
+        ],
+        [
+          -0.029702574014663696,
+          0.9822153449058533,
+          4.339996337890625
+        ]
+      ],
+      "B": [
+        [
+          0.9995905160903931,
+          -0.02916961908340454,
+          9.189746856689453
+        ],
+        [
+          0.03076942451298237,
+          1.0174939632415771,
+          -5.2207794189453125
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/freepik_7/element_6.png",
+        "subfolder": "Panel/freepik_7"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "rotate",
+            "squeeze"
+          ],
+          "angle_velocity": -1.7020824231566998,
+          "end_scale_x": 1.0,
+          "end_scale_y": 0.9652978531451567
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            0.9995588064193726,
+            0.02918720245361328,
+            -8.275802612304688
+          ],
+          [
+            -0.029702574014663696,
+            0.9822153449058533,
+            4.339996337890625
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9995905160903931,
+            -0.02916961908340454,
+            9.189746856689453
+          ],
+          [
+            0.03076942451298237,
+            1.0174939632415771,
+            -5.2207794189453125
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.9982355237007141,
+            0.05731836333870888,
+            -17.183338165283203
+          ],
+          [
+            -0.059378936886787415,
+            0.9635946154594421,
+            9.916030883789062
+          ]
+        ],
+        "bbox0": [
+          9,
+          235,
+          146,
+          335
+        ],
+        "bbox05": [
+          9,
+          235,
+          145,
+          330
+        ],
+        "bbox1": [
+          9,
+          235,
+          144,
+          325
+        ],
+        "center0": [
+          77.5,
+          285.0
+        ],
+        "center05": [
+          77.0,
+          282.5
+        ],
+        "center1": [
+          76.5,
+          280.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "color",
+          "components": [
+            "color"
+          ],
+          "component_details": [
+            {
+              "variant": "color",
+              "color_multipliers": [
+                1.0418989658355713,
+                1.0322378873825073,
+                0.8134381175041199
+              ],
+              "color_permutation": [
+                0,
+                1,
+                2
+              ]
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/010_I0.png",
+        "I_0.5": "overlays_masks/010_I_0.5.png",
+        "I1": "overlays_masks/010_I1.png",
+        "I_0.5_copied": "overlays_masks/010_I_0.5_copied.png"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "object_id": "009",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/celeste_languages/canadian-english.png",
+        "subfolder": "Text/celeste_languages"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "bbox05": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "bbox1": [
+          -108,
+          204,
+          37,
+          232
+        ],
+        "center0": [
+          -35.5,
+          218.0
+        ],
+        "center05": [
+          -35.5,
+          218.0
+        ],
+        "center1": [
+          -35.5,
+          218.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/009_I0.png",
+        "I_0.5": "overlays_masks/009_I_0.5.png",
+        "I1": "overlays_masks/009_I1.png",
+        "I_0.5_copied": "overlays_masks/009_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "008",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          0.999308168888092,
+          -0.08076980710029602,
+          4.722572326660156
+        ],
+        [
+          0.03719162940979004,
+          0.9976863265037537,
+          -3.8991947174072266
+        ]
+      ],
+      "B": [
+        [
+          0.9960688948631287,
+          0.08064925670623779,
+          -6.6336212158203125
+        ],
+        [
+          -0.03731219097971916,
+          1.0009255409240723,
+          4.587340354919434
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/rabbit_hole_plain_panel/ui_2300.png",
+        "subfolder": "Panel/rabbit_hole_plain_panel"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "both",
+        "params": {
+          "components": [
+            "rotate",
+            "shear"
+          ],
+          "angle_velocity": 2.131415026567076,
+          "shear_velocity": -0.04360834716502307
+        },
+        "motion_step": [
+          -0.007622109284299401,
+          0.002765309405222867
+        ],
+        "affine_0_to_05": [
+          [
+            0.999308168888092,
+            -0.08076980710029602,
+            4.722572326660156
+          ],
+          [
+            0.03719162940979004,
+            0.9976863265037537,
+            -3.8991947174072266
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9960688948631287,
+            0.08064925670623779,
+            -6.6336212158203125
+          ],
+          [
+            -0.03731219097971916,
+            1.0009255409240723,
+            4.587340354919434
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.9972335696220398,
+            -0.1613072156906128,
+            12.051136016845703
+          ],
+          [
+            0.07433179765939713,
+            0.9907506108283997,
+            -8.029449462890625
+          ]
+        ],
+        "bbox0": [
+          123,
+          88,
+          208,
+          126
+        ],
+        "bbox05": [
+          120,
+          89,
+          204,
+          129
+        ],
+        "bbox1": [
+          116,
+          90,
+          200,
+          130
+        ],
+        "center0": [
+          165.5,
+          107.0
+        ],
+        "center05": [
+          162.0,
+          109.0
+        ],
+        "center1": [
+          158.0,
+          110.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "disappear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/008_I0.png",
+        "I_0.5": "overlays_masks/008_I_0.5.png",
+        "I1": "overlays_masks/008_I1.png",
+        "I_0.5_copied": "overlays_masks/008_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "005",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/va11_boxed_text/tab4_spr_0.png",
+        "subfolder": "Panel/va11_boxed_text"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "bbox05": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "bbox1": [
+          -23,
+          -63,
+          189,
+          6
+        ],
+        "center0": [
+          83.0,
+          -28.5
+        ],
+        "center05": [
+          83.0,
+          -28.5
+        ],
+        "center1": [
+          83.0,
+          -28.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/005_I0.png",
+        "I_0.5": "overlays_masks/005_I_0.5.png",
+        "I1": "overlays_masks/005_I1.png",
+        "I_0.5_copied": "overlays_masks/005_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "007",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Functional",
+        "class_weight": 0.25,
+        "source_rel": "Functional/freepik_14/element_21.png",
+        "subfolder": "Functional/freepik_14"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "bbox05": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "bbox1": [
+          204,
+          227,
+          287,
+          309
+        ],
+        "center0": [
+          245.5,
+          268.0
+        ],
+        "center05": [
+          245.5,
+          268.0
+        ],
+        "center1": [
+          245.5,
+          268.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/007_I0.png",
+        "I_0.5": "overlays_masks/007_I_0.5.png",
+        "I1": "overlays_masks/007_I1.png",
+        "I_0.5_copied": "overlays_masks/007_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "003",
+      "mode": "none",
+      "A": [
+        [
+          1.1451632976531982,
+          0.0,
+          7.9856109619140625
+        ],
+        [
+          0.0,
+          1.1451632976531982,
+          3.9018630981445312
+        ]
+      ],
+      "B": [
+        [
+          0.8874987363815308,
+          0.0,
+          -7.076332092285156
+        ],
+        [
+          0.0,
+          0.8874987363815308,
+          -3.0239219665527344
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Text",
+        "class_weight": 0.15,
+        "source_rel": "Text/rabbit_hole_fat_number/ui_0139.png",
+        "subfolder": "Text/rabbit_hole_fat_number"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "both",
+        "params": {
+          "components": [
+            "scale"
+          ],
+          "end_scale": 1.2903267047730662
+        },
+        "motion_step": [
+          -0.0003576575725679609,
+          0.026771216354500017
+        ],
+        "affine_0_to_05": [
+          [
+            1.1451632976531982,
+            0.0,
+            7.9856109619140625
+          ],
+          [
+            0.0,
+            1.1451632976531982,
+            3.9018630981445312
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.8874987363815308,
+            0.0,
+            -7.076332092285156
+          ],
+          [
+            0.0,
+            0.8874987363815308,
+            -3.0239219665527344
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.290326714515686,
+            0.0,
+            16.971229553222656
+          ],
+          [
+            0.0,
+            1.290326714515686,
+            7.803707122802734
+          ]
+        ],
+        "bbox0": [
+          -62,
+          57,
+          5,
+          135
+        ],
+        "bbox05": [
+          -62,
+          69,
+          14,
+          159
+        ],
+        "bbox1": [
+          -62,
+          81,
+          24,
+          182
+        ],
+        "center0": [
+          -28.5,
+          96.0
+        ],
+        "center05": [
+          -24.0,
+          114.0
+        ],
+        "center1": [
+          -19.0,
+          131.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/003_I0.png",
+        "I_0.5": "overlays_masks/003_I_0.5.png",
+        "I1": "overlays_masks/003_I1.png",
+        "I_0.5_copied": "overlays_masks/003_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "001",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/freepik_10/element_13.png",
+        "subfolder": "Symbol/freepik_10"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "bbox05": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "bbox1": [
+          400,
+          63,
+          513,
+          169
+        ],
+        "center0": [
+          456.5,
+          116.0
+        ],
+        "center05": [
+          456.5,
+          116.0
+        ],
+        "center1": [
+          456.5,
+          116.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/001_I0.png",
+        "I_0.5": "overlays_masks/001_I_0.5.png",
+        "I1": "overlays_masks/001_I1.png",
+        "I_0.5_copied": "overlays_masks/001_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "004",
+      "mode": "none",
+      "A": [
+        [
+          1.1026360988616943,
+          0.09621201455593109,
+          -56.2752685546875
+        ],
+        [
+          -0.09621201455593109,
+          1.1026360988616943,
+          9.319656372070312
+        ]
+      ],
+      "B": [
+        [
+          0.9085279703140259,
+          -0.07927484065294266,
+          49.19940185546875
+        ],
+        [
+          0.07927484065294266,
+          0.9085279703140259,
+          -6.3707733154296875
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/mc/tab_item_search.png",
+        "subfolder": "Panel/mc"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "scale",
+            "rotate"
+          ],
+          "angle_velocity": -4.986790891527029,
+          "end_scale": 1.2136513555411501
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.1026360988616943,
+            0.09621201455593109,
+            -56.2752685546875
+          ],
+          [
+            -0.09621201455593109,
+            1.1026360988616943,
+            9.319656372070312
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9085279703140259,
+            -0.07927484065294266,
+            49.19940185546875
+          ],
+          [
+            0.07927484065294266,
+            0.9085279703140259,
+            -6.3707733154296875
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.1953102350234985,
+            0.21019722521305084,
+            -113.72128295898438
+          ],
+          [
+            -0.21019722521305084,
+            1.1953102350234985,
+            27.193084716796875
+          ]
+        ],
+        "bbox0": [
+          323,
+          245,
+          357,
+          269
+        ],
+        "bbox05": [
+          323,
+          245,
+          363,
+          275
+        ],
+        "bbox1": [
+          323,
+          245,
+          369,
+          281
+        ],
+        "center0": [
+          340.0,
+          257.0
+        ],
+        "center05": [
+          343.0,
+          260.0
+        ],
+        "center1": [
+          346.0,
+          263.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/004_I0.png",
+        "I_0.5": "overlays_masks/004_I_0.5.png",
+        "I1": "overlays_masks/004_I1.png",
+        "I_0.5_copied": "overlays_masks/004_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "000",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/mns_character/spr_online_avatars_13.png",
+        "subfolder": "Symbol/mns_character"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "bbox05": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "bbox1": [
+          187,
+          2,
+          279,
+          96
+        ],
+        "center0": [
+          233.0,
+          49.0
+        ],
+        "center05": [
+          233.0,
+          49.0
+        ],
+        "center1": [
+          233.0,
+          49.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/000_I0.png",
+        "I_0.5": "overlays_masks/000_I_0.5.png",
+        "I1": "overlays_masks/000_I1.png",
+        "I_0.5_copied": "overlays_masks/000_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "002",
+      "mode": "none",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Symbol",
+        "class_weight": 0.3,
+        "source_rel": "Symbol/persona_5/element_347.png",
+        "subfolder": "Symbol/persona_5"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "bbox05": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "bbox1": [
+          251,
+          -75,
+          344,
+          28
+        ],
+        "center0": [
+          297.5,
+          -23.5
+        ],
+        "center05": [
+          297.5,
+          -23.5
+        ],
+        "center1": [
+          297.5,
+          -23.5
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "none",
+        "detail": {},
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/002_I0.png",
+        "I_0.5": "overlays_masks/002_I_0.5.png",
+        "I1": "overlays_masks/002_I1.png",
+        "I_0.5_copied": "overlays_masks/002_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "006",
+      "mode": "appear_disappear",
+      "A": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "B": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/cc/panelMenu_1.png",
+        "subfolder": "Panel/cc"
+      },
+      "geometry": {
+        "mode": "static",
+        "submode": "static",
+        "params": {},
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        "bbox0": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "bbox05": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "bbox1": [
+          442,
+          225,
+          555,
+          281
+        ],
+        "center0": [
+          498.5,
+          253.0
+        ],
+        "center05": [
+          498.5,
+          253.0
+        ],
+        "center1": [
+          498.5,
+          253.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "appear_disappear",
+        "detail": {
+          "variant": "appear"
+        },
+        "discontinuity_label": 1
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/006_I0.png",
+        "I_0.5": "overlays_masks/006_I_0.5.png",
+        "I1": "overlays_masks/006_I1.png",
+        "I_0.5_copied": "overlays_masks/006_I_0.5_copied.png"
+      }
+    },
+    {
+      "object_id": "010",
+      "mode": "change_appearance",
+      "A": [
+        [
+          0.9995588064193726,
+          0.02918720245361328,
+          -8.275802612304688
+        ],
+        [
+          -0.029702574014663696,
+          0.9822153449058533,
+          4.339996337890625
+        ]
+      ],
+      "B": [
+        [
+          0.9995905160903931,
+          -0.02916961908340454,
+          9.189746856689453
+        ],
+        [
+          0.03076942451298237,
+          1.0174939632415771,
+          -5.2207794189453125
+        ]
+      ],
+      "alpha": 1.0,
+      "beta": 0.0,
+      "alpha0": 1.0,
+      "alpha05": 1.0,
+      "alpha1": 1.0,
+      "goons": {
+        "class_name": "Panel",
+        "class_weight": 0.25,
+        "source_rel": "Panel/freepik_7/element_6.png",
+        "subfolder": "Panel/freepik_7"
+      },
+      "geometry": {
+        "mode": "affine",
+        "submode": "affine",
+        "params": {
+          "components": [
+            "rotate",
+            "squeeze"
+          ],
+          "angle_velocity": -1.7020824231566998,
+          "end_scale_x": 1.0,
+          "end_scale_y": 0.9652978531451567
+        },
+        "motion_step": [
+          0.0,
+          0.0
+        ],
+        "affine_0_to_05": [
+          [
+            0.9995588064193726,
+            0.02918720245361328,
+            -8.275802612304688
+          ],
+          [
+            -0.029702574014663696,
+            0.9822153449058533,
+            4.339996337890625
+          ]
+        ],
+        "affine_1_to_05": [
+          [
+            0.9995905160903931,
+            -0.02916961908340454,
+            9.189746856689453
+          ],
+          [
+            0.03076942451298237,
+            1.0174939632415771,
+            -5.2207794189453125
+          ]
+        ],
+        "affine_0_to_1": [
+          [
+            0.9982355237007141,
+            0.05731836333870888,
+            -17.183338165283203
+          ],
+          [
+            -0.059378936886787415,
+            0.9635946154594421,
+            9.916030883789062
+          ]
+        ],
+        "bbox0": [
+          9,
+          235,
+          146,
+          335
+        ],
+        "bbox05": [
+          9,
+          235,
+          145,
+          330
+        ],
+        "bbox1": [
+          9,
+          235,
+          144,
+          325
+        ],
+        "center0": [
+          77.5,
+          285.0
+        ],
+        "center05": [
+          77.0,
+          282.5
+        ],
+        "center1": [
+          76.5,
+          280.0
+        ]
+      },
+      "transparent": {
+        "enabled": false,
+        "alpha_scales": {
+          "I0": 1.0,
+          "I_0.5": 1.0,
+          "I1": 1.0,
+          "I_0.5_copied": 1.0
+        }
+      },
+      "temporal": {
+        "mode": "change_appearance",
+        "detail": {
+          "variant": "color",
+          "components": [
+            "color"
+          ],
+          "component_details": [
+            {
+              "variant": "color",
+              "color_multipliers": [
+                1.0418989658355713,
+                1.0322378873825073,
+                0.8134381175041199
+              ],
+              "color_permutation": [
+                0,
+                1,
+                2
+              ]
+            }
+          ],
+          "alpha_scales": null
+        },
+        "discontinuity_label": 0
+      },
+      "mask_paths": {
+        "I0": "overlays_masks/010_I0.png",
+        "I_0.5": "overlays_masks/010_I_0.5.png",
+        "I1": "overlays_masks/010_I1.png",
+        "I_0.5_copied": "overlays_masks/010_I_0.5_copied.png"
+      }
+    }
+  ]
+}

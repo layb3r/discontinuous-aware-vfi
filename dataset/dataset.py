@@ -12,70 +12,133 @@ from torch.utils.data import DataLoader, Dataset
 cv2.setNumThreads(0)
 
 class AugVimeo(Dataset):
-    def __init__(self, data_root):
+    def __init__(self, dataset_name="validation", data_root="", has_crop_aug=True):
+        self.dataset_name = dataset_name
         self.data_root = data_root
-        self.sample_dirs = self._collect_samples()
+        self.has_crop_aug = has_crop_aug
+        self.crop_h = 256
+        self.crop_w = 256
+        self.load_data()
+        self.image_root = os.path.join(self.data_root, 'sequences')
+        # self.flow_root = os.path.join(self.data_root, 'flow')
+        train_fn = os.path.join(self.data_root, 'trainlist.txt')
+        test_fn = os.path.join(self.data_root, 'testlist.txt')
+        with open(train_fn, 'r') as f:
+            self.trainlist = f.read().splitlines()
+        with open(test_fn, 'r') as f:
+            self.testlist = f.read().splitlines()
 
-    def _collect_samples(self):
-        required_files = ("I0.png", "I1.png", "I_0.5_copied.png")
-        sample_dirs = []
+        self.load_data()
 
-        for root, _, files in os.walk(self.data_root):
-            file_set = set(files)
-            if not all(name in file_set for name in required_files):
-                continue
 
-            masks_dir = os.path.join(root, "aggregate_masks")
-            if not os.path.isfile(os.path.join(masks_dir, "M0.png")):
-                continue
-            if not os.path.isfile(os.path.join(masks_dir, "M1.png")):
-                continue
+    def __len__(self):
+        return len(self.meta_data)
 
-            sample_dirs.append(root)
 
-        sample_dirs.sort()
-        if len(sample_dirs) == 0:
-            raise RuntimeError(
-                f"No AugVimeo samples found under {self.data_root}. Expected folders containing I0.png, I1.png, I_0.5_copied.png and aggregate_masks/M0.png, M1.png."
-            )
+    def load_data(self):
+        if self.dataset_name == 'train':
+            self.meta_data = self.trainlist
+        else:
+            self.meta_data = self.testlist
 
-        return sample_dirs
+    def aug(self, img0, gt, img1, m0, m1, h, w):
+        ih, iw, _ = img0.shape
+        x = np.random.randint(0, ih - h + 1)
+        y = np.random.randint(0, iw - w + 1)
+        img0 = img0[x:x+h, y:y+w, :]
+        img1 = img1[x:x+h, y:y+w, :]
+        gt = gt[x:x+h, y:y+w, :]
+        m0 = m0[x:x+h, y:y+w]
+        m1 = m1[x:x+h, y:y+w]
+        return img0, gt, img1, m0, m1
 
     @staticmethod
     def _read_image(path):
         image = cv2.imread(path, cv2.IMREAD_COLOR)
         if image is None:
             raise FileNotFoundError(f"Could not read image: {path}")
-        return torch.from_numpy(image.copy()).permute(2, 0, 1)
+        return image
 
     @staticmethod
     def _read_mask(path):
         mask = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         if mask is None:
             raise FileNotFoundError(f"Could not read mask: {path}")
-        mask = (mask > 0).astype(np.float32)
-        return torch.from_numpy(mask).unsqueeze(0)
+        return (mask > 0).astype(np.uint8) * 255
 
-    def __len__(self):
-        return len(self.sample_dirs)
-
-    def __getitem__(self, index):
-        sample_dir = self.sample_dirs[index]
+    def getimg(self, index):
+        sample_dir = self.meta_data[index]
         masks_dir = os.path.join(sample_dir, "aggregate_masks")
 
-        sample = {
-            "sample_dir": sample_dir,
-            "I0": self._read_image(os.path.join(sample_dir, "I0.png")),
-            "I1": self._read_image(os.path.join(sample_dir, "I1.png")),
-            "gt": self._read_image(os.path.join(sample_dir, "I_0.5_copied.png")),
-            "M0": self._read_mask(os.path.join(masks_dir, "M0.png")),
-            "M1": self._read_mask(os.path.join(masks_dir, "M1.png")),
-        }
-        img0 = sample["I0"]
-        img1 = sample["I1"]
-        gt = sample["gt"]
-        
-        return torch.cat((img0, img1, gt), 0)
+        img0 = self._read_image(os.path.join(sample_dir, "I0.png"))
+        gt = self._read_image(os.path.join(sample_dir, "I_0.5_copied.png"))
+        img1 = self._read_image(os.path.join(sample_dir, "I1.png"))
+        m0 = self._read_mask(os.path.join(masks_dir, "M0.png"))
+        m1 = self._read_mask(os.path.join(masks_dir, "M1.png"))
+        return img0, gt, img1, m0, m1
+
+    def __getitem__(self, index):
+        img0, gt, img1, m0, m1 = self.getimg(index)
+
+        if self.dataset_name == 'train':
+            if random.uniform(0, 1) < 0.1:
+                img0 = cv2.resize(img0, dsize=None, fx=2.0, fy=2.0,
+                        interpolation=cv2.INTER_LINEAR)
+                img1 = cv2.resize(img1, dsize=None, fx=2.0, fy=2.0,
+                        interpolation=cv2.INTER_LINEAR)
+                gt = cv2.resize(gt, dsize=None, fx=2.0, fy=2.0,
+                        interpolation=cv2.INTER_LINEAR)
+                m0 = cv2.resize(m0, dsize=None, fx=2.0, fy=2.0,
+                        interpolation=cv2.INTER_NEAREST)
+                m1 = cv2.resize(m1, dsize=None, fx=2.0, fy=2.0,
+                        interpolation=cv2.INTER_NEAREST)
+
+            if self.has_crop_aug:
+                img0, gt, img1, m0, m1 = self.aug(
+                    img0, gt, img1, m0, m1, self.crop_h, self.crop_w)
+
+            if random.uniform(0, 1) < 0.5:
+                img0 = img0[:, :, ::-1]
+                img1 = img1[:, :, ::-1]
+                gt = gt[:, :, ::-1]
+
+            if random.uniform(0, 1) < 0.5:
+                img0 = img0[::-1]
+                img1 = img1[::-1]
+                gt = gt[::-1]
+                m0 = m0[::-1]
+                m1 = m1[::-1]
+
+            if random.uniform(0, 1) < 0.5:
+                img0 = img0[:, ::-1]
+                img1 = img1[:, ::-1]
+                gt = gt[:, ::-1]
+                m0 = m0[:, ::-1]
+                m1 = m1[:, ::-1]
+
+            if random.uniform(0, 1) < 0.5:
+                rot_option = np.random.randint(1, 4)
+                img0 = np.rot90(img0, rot_option)
+                img1 = np.rot90(img1, rot_option)
+                gt = np.rot90(gt, rot_option)
+                m0 = np.rot90(m0, rot_option)
+                m1 = np.rot90(m1, rot_option)
+
+            if random.uniform(0, 1) < 0.5:
+                tmp = img1
+                img1 = img0
+                img0 = tmp
+                tmp = m1
+                m1 = m0
+                m0 = tmp
+
+        img0 = torch.from_numpy(img0.copy()).permute(2, 0, 1)
+        img1 = torch.from_numpy(img1.copy()).permute(2, 0, 1)
+        gt = torch.from_numpy(gt.copy()).permute(2, 0, 1)
+        m0 = torch.from_numpy(m0.copy()).unsqueeze(0)
+        m1 = torch.from_numpy(m1.copy()).unsqueeze(0)
+
+        return torch.cat((img0, img1, gt, m0, m1), 0)
 
 class SnuFilm_bak(Dataset):
     def __init__(self, data_root, data_type="extreme"):

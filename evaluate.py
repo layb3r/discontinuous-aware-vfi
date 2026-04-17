@@ -82,5 +82,3 @@ avg_score = metric.eval(meta)
 print("AVG Score of %s".center(41, "=") % "VTinker")
 for k, v in avg_score.items():
     print("{:<10} {:<10.3f}".format(k, v))
-
-# python -m tools.evaluate_vimeo

@@ -5,6 +5,8 @@ import torch.nn.functional as F
 from utils import flow_viz
 import numpy as np
 from softsplat import softsplat
+from calc_metric import Metrics
+from DisentangledVFI import DisentangledVFI
 
 from torch.nn.modules.utils import consume_prefix_in_state_dict_if_present
 # consume_prefix_in_state_dict_if_present(state_dict, "module.")
@@ -83,15 +85,15 @@ def flow(img0_path, img1_path, model_path='./weights/flow_estimator.pth'):
         
     
         
-    flow0t = flow0t[0].permute(1, 2, 0).cpu().numpy()
-    flow1t = flow1t[0].permute(1, 2, 0).cpu().numpy()
-    flow0t_img = flow_viz.flow_to_image(flow0t)
-    flow1t_img = flow_viz.flow_to_image(flow1t)
-    cv2.imwrite('flow0t.png', flow0t_img[:, :, ::-1])
-    cv2.imwrite('flow1t.png', flow1t_img[:, :, ::-1])
+    # flow0t = flow0t[0].permute(1, 2, 0).cpu().numpy()
+    # flow1t = flow1t[0].permute(1, 2, 0).cpu().numpy()
+    # flow0t_img = flow_viz.flow_to_image(flow0t)
+    # flow1t_img = flow_viz.flow_to_image(flow1t)
+    # cv2.imwrite('flow0t.png', flow0t_img[:, :, ::-1])
+    # cv2.imwrite('flow1t.png', flow1t_img[:, :, ::-1])
 
-    cv2.imwrite('warped_img0.png', warped_img0[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
-    cv2.imwrite('warped_img1.png', warped_img1[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
+    # cv2.imwrite('warped_img0.png', warped_img0[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
+    # cv2.imwrite('warped_img1.png', warped_img1[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
 
 def fast_inpaint_normalized(image, mask, num_iters=50):
     img = image.clone()
@@ -223,8 +225,66 @@ def flow_completion(sample_path, model_path='./weights/flow_estimator.pth'):
     cv2.imwrite('warped_img0_completed.png', warped_img0[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
     cv2.imwrite('warped_img1_completed.png', warped_img1[0].permute(1, 2, 0).cpu().numpy()[:, :, ::-1])
 
+def calc_metrics(pred_path, gt_path):
+    metrics = ["psnr", "ssim"]
+    print("Building SCORE models...", metrics)
+    metric = Metrics(metrics, skip_ref_frames=None, batch_size=1)
+    print("Done")
+    meta = dict(disImgs=pred_path, refImgs=gt_path)
+    avg_score = metric.eval(meta)
+
+    print("AVG Score of %s".center(41, "=") % "VTinker")
+    for k, v in avg_score.items():
+        print("{:<10} {:<10.3f}".format(k, v))
+
+def test_disentangledvfi():
+    # load with strict=False to ignore missing keys related to the synthesis net
+    model = DisentangledVFI()
+    model.load_state_dict(torch.load('weights/DisentangledVFI_init.pth')["state_dict"], strict=False)
+    print("DisentangledVFI loaded successfully with strict=False.")
+
+    # count number of parameters in the model
+    total_params = sum(v.numel() for v in model.parameters())
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Total parameters in DisentangledVFI: {total_params:,}")
+    print(f"Trainable parameters in DisentangledVFI: {trainable_params:,}")
+
+    # create a temporal checkpoint:
+    torch.save(
+        {
+            "state_dict": model.state_dict(),
+            "meta": {
+                "note": "This is a temporal checkpoint for testing. It is not intended for actual use.",
+            },
+         },
+         'weights/DisentangledVFI_test_checkpoint.pth',
+    )
+
+    # print model.state_dict() keys:
+    print("Model state_dict keys:")
+    for k in model.state_dict().keys():
+        print(k)
+
+def load_disentangledvfi_checkpoint():
+    model = DisentangledVFI()
+    checkpoint = torch.load('weights/DisentangledVFI_test_checkpoint.pth')
+    print(checkpoint["state_dict"].keys())
+
+    tmp_param = model.state_dict()
+    for kk,v in checkpoint["state_dict"].items():
+        k = kk[7:]
+        if k in tmp_param:
+            tmp_param[k] = v
+        else:
+            print(k, "  Not load!!!")
+    model.load_state_dict(checkpoint["state_dict"])
+    print("Checkpoint loaded successfully.")
+
 if __name__ == "__main__":
     # load_pkl('flow_estimator.pth')
     # load_pkl('UPR_ReDesgin.pkl')
     # flow('dataset/0001/I0.png', 'dataset/0001/I1.png')
-    flow_completion('dataset/0001')
+    # flow_completion('dataset/0001')
+    # calc_metrics('./assets/pred', './assets/gt')
+    # test_disentangledvfi()
+    load_disentangledvfi_checkpoint()
