@@ -9,54 +9,19 @@ import torch.optim as optim
 import itertools
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.nn.functional as F
-# from .loss import EPE, Ternary, LapLoss
-from loss import Ternary
+import sys
 
-from DisentangledVFI import DisentangledVFI as base_model
-# from models import Vgg19
+sys.path.append('..')
+
+from loss import EPE, Ternary, LapLoss
+
+# from core.models.upr_base import Model as base_model
+from upr_large import Model as large_model
+# from core.models.upr_llarge import Model as LARGE_model
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-class ReconstructionLoss(nn.Module):
-    def __init__(self, type='l1'):
-        super(ReconstructionLoss, self).__init__()
-        if (type == 'l1'):
-            self.loss = nn.L1Loss()
-        elif (type == 'l2'):
-            self.loss = nn.MSELoss()
-        else:
-            raise SystemExit('Error: no such type of ReconstructionLoss!')
-
-    def forward(self, sr, hr):
-        return self.loss(sr, hr)
-    
-def vgg_loss(out, ref):
-    weights = [1.0 / 2.6, 1.0 / 4.8, 1.0 / 3.7, 1.0 / 5.6, 10.0 / 1.5]
-    final_loss = None
-    for m, r, w in zip(out, ref, weights):
-        if final_loss == None:
-            final_loss = torch.mean(torch.abs(m - r))*w
-        else:
-            final_loss = final_loss + torch.mean(torch.abs(m - r))*w
-    return final_loss
-
-def style_loss(out, ref):
-    weights = [1.0 / 2.6, 1.0 / 4.8, 1.0 / 3.7, 1.0 / 5.6, 10.0 / 1.5]
-    final_loss = None
-    for m, r, w in zip(out, ref, weights):
-        B, C, H, W = m.shape
-        m = m.view(B, C, H * W)
-        m = torch.bmm(m, m.transpose(1, 2)) / (H * W)
-        B, C, H, W = r.shape
-        r = r.view(B, C, H * W)
-        r = torch.bmm(r, r.transpose(1, 2)) / (H * W)
-
-        if final_loss == None:
-            final_loss = torch.mean((m - r)**2)*w
-        else:
-            final_loss = final_loss + torch.mean((m - r)**2)*w
-    return final_loss
 
 class Pipeline:
     def __init__(self,
@@ -68,31 +33,26 @@ class Pipeline:
             ):
         self.model_cfg_dict = model_cfg_dict
         self.optimizer_cfg_dict = optimizer_cfg_dict
-        self.rec_loss = ReconstructionLoss(type="l1")
-        # self.vgg19 = Vgg19.Vgg19(requires_grad=False).eval()
+        self.epe = EPE()
         self.ter = Ternary()
+        self.laploss = LapLoss()
 
         self.init_model()
         self.device()
         self.training = training
-        
+
         # We note that in practical, the `lr` of AdamW is reset from the
         # outside, using cosine annealing during the while training process.
         if training:
-            p_contral = []
-            p_other = []
-            for pname,p in self.model.named_parameters():
-                if pname.startswith('flow_estimator'):
-                    p_contral.append(p) 
-                else:
-                    p_other.append(p)
-            self.optimG = AdamW([{'params':p_other},{'params':p_contral, 'lr':1.5e-6}],
+            self.optimG = AdamW(itertools.chain(
+                filter(lambda p: p.requires_grad, self.model.parameters())),
+                lr=optimizer_cfg_dict["init_lr"],
                 weight_decay=optimizer_cfg_dict["weight_decay"])
 
         # `local_rank == -1` is used for testing, which does not need DDP
-        # if local_rank != -1:
-        #     self.model = DDP(self.model, device_ids=[local_rank],
-        #             output_device=local_rank, find_unused_parameters=True)
+        if local_rank != -1:
+            self.model = DDP(self.model, device_ids=[local_rank],
+                    output_device=local_rank, find_unused_parameters=False)
 
         # Restart the experiment from last saved model, by loading the state of
         # the optimizer
@@ -114,7 +74,6 @@ class Pipeline:
 
     def device(self):
         self.model.to(DEVICE)
-        # self.vgg19.to(DEVICE)
 
 
     @staticmethod
@@ -148,21 +107,24 @@ class Pipeline:
 
         # check args
         model_cfg_dict = self.model_cfg_dict
+        model_size = model_cfg_dict["model_size"] \
+                if "model_size" in model_cfg_dict else "base"
+        pyr_level = model_cfg_dict["pyr_level"] \
+                if "pyr_level" in model_cfg_dict else 3
+        nr_lvl_skipped = model_cfg_dict["nr_lvl_skipped"] \
+                if "nr_lvl_skipped" in model_cfg_dict else 0
         load_pretrain = model_cfg_dict["load_pretrain"] \
                 if "load_pretrain" in model_cfg_dict else False
         model_file = model_cfg_dict["model_file"] \
                 if "model_file" in model_cfg_dict else ""
-        
-        
-        self.model = base_model()
-        # params = torch.load(self.upr_redesgin_path)
-        # tmp_param = self.model.flowgen.state_dict()
 
-        # for kk, v in params.items():
-        #     k = kk[7:]
-        #     if k in tmp_param:
-        #         tmp_param[k] = v
-        # self.model.flowgen.load_state_dict(tmp_param)
+        # instantiate model
+        if model_size == "LARGE":
+            self.model = LARGE_model(pyr_level, nr_lvl_skipped)
+        elif model_size == "large":
+            self.model = large_model(pyr_level, nr_lvl_skipped)
+        else:
+            self.model = base_model(pyr_level, nr_lvl_skipped)
 
         # load pretrained model weight
         if load_pretrain:
@@ -189,24 +151,28 @@ class Pipeline:
             torch.save(self.model.state_dict(), '{}/model-{}.pkl'\
                     .format(path, save_step))
 
-    def inference(self, img0, img1, m0, m1, time_period=0.5, flownet_deep = None, skip_num = 0):
-        interp_img = self.model.module.inference(img0, img1, m0, m1,
+    def inference(self, img0, img1,
+            time_period=0.5,
+            pyr_level=3,
+            nr_lvl_skipped=0):
+        interp_img, bi_flow, _ = self.model(img0, img1,
                 time_period=time_period,
-                flownet_deep = flownet_deep, 
-                skip_num = skip_num)
-        return interp_img
+                pyr_level=pyr_level,
+                nr_lvl_skipped=nr_lvl_skipped)
+        return interp_img, bi_flow
 
 
-    def train_one_iter(self, img0, img1, m0, m1, gt, jindu, learning_rate, loss_type="l2+census", time_period=0.5, flownet_deep = None, skip_num = 0):
-        self.optimG.param_groups[0]['lr'] =learning_rate
+    def train_one_iter(self, img0, img1, gt, learning_rate=0,
+            bi_flow_gt=None, time_period=0.5, loss_type="l2+census"):
+        for param_group in self.optimG.param_groups:
+            param_group['lr'] = learning_rate
         self.train()
 
-        interp_img, flow_01, flow_10, flow_01_ref, flow_10_ref, m_xor = self.model(img0, img1, m0, m1, time_period, 
-                         flownet_deep = flownet_deep, 
-                         skip_num = skip_num)
+        interp_img, bi_flow, info_dict = self.model(img0, img1, time_period)
 
         with torch.no_grad():
-            loss_interp_l2_nograd = (((interp_img - gt) ** 2 + 1e-6) ** 0.5).mean()
+            loss_interp_l2_nograd = (((interp_img - gt) ** 2 + 1e-6) ** 0.5)\
+                    .mean()
 
         loss_G = 0
         if loss_type == "l1":
@@ -216,21 +182,11 @@ class Pipeline:
             loss_G = loss_interp_l2
         elif loss_type == "l2+census":
             loss_interp_l2 = (((interp_img - gt) ** 2 + 1e-6) ** 0.5).mean()
-
-            # axiliary loss only in masked region for flows:
-            # flow_01 = flow_01 * m_xor
-            # flow_10 = flow_10 * m_xor
-            # flow_01_ref = flow_01_ref * m_xor
-            # flow_10_ref = flow_10_ref * m_xor
-            # loss_forward = (((flow_01 - flow_01_ref) ** 2 + 1e-6) ** 0.5).mean()
-            # loss_backward = (((flow_10 - flow_10_ref) ** 2 + 1e-6) ** 0.5).mean()
             loss_ter = self.ter(interp_img, gt).mean()
-
-            # distil_loss = 0.3 * loss_forward + 0.3 * loss_backward
-
             loss_G = loss_interp_l2 + loss_ter
         else:
             ValueError("unsupported loss type!")
+
 
         self.optimG.zero_grad()
         loss_G.backward()
@@ -238,8 +194,7 @@ class Pipeline:
 
         extra_dict = {}
         extra_dict["loss_interp_l2"] = loss_interp_l2_nograd
-        # extra_dict["loss_forward"] = loss_forward
-        # extra_dict["loss_backward"] = loss_backward
+        extra_dict["bi_flow"] = bi_flow
 
         return interp_img, extra_dict
 

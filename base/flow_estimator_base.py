@@ -2,8 +2,7 @@ import cv2
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils import correlation
-from utils import flow_viz
+import correlation
 import math
 
 def resize(x, scale_factor):
@@ -108,26 +107,6 @@ class MotionEstimator(nn.Module):
         volume1 = F.leaky_relu(
                 input=corr_fn(tenFirst=feat1, tenSecond=feat1_warp),
                 negative_slope=0.1, inplace=False)
-
-        if mask is not None:
-            if mask.dim() == 3:
-                mask = mask.unsqueeze(1)
-            elif mask.dim() == 4 and mask.shape[1] != 1:
-                mask = mask.mean(dim=1, keepdim=True)
-
-            mask = F.interpolate(mask.float(), size=volume0.shape[-2:], mode="nearest")
-            target_b = volume0.shape[0]
-            if mask.shape[0] == b:
-                mask = mask[:target_b]
-            elif mask.shape[0] == 1 and target_b > 1:
-                mask = mask.expand(target_b, -1, -1, -1)
-            elif mask.shape[0] != target_b:
-                repeat_num = math.ceil(target_b / mask.shape[0])
-                mask = mask.repeat(repeat_num, 1, 1, 1)[:target_b]
-
-            mask = mask.to(device=volume0.device, dtype=volume0.dtype).clamp(0.0, 1.0)
-            volume0 = volume0 * (1 - mask)
-            volume1 = volume1 * (1 - mask)
         
         input_feat0 = torch.cat([volume0, feat0, feat0_warp,last_feat[:b//2],last_flow[:b//2]], 1)
         input_feat1 = torch.cat([volume1, feat1, feat1_warp,last_feat[b//2:],last_flow[b//2:]], 1)
@@ -180,35 +159,17 @@ class Up_sample_module(nn.Module):
         
         self.final = nn.Conv2d(in_channels=self.hc, out_channels=2, kernel_size=1, stride= 1, padding=0)
 
-    def flow_up(self, flow, img, mask=None):
+    def flow_up(self, flow, img):
         a = self.A(img)
         b = self.B(flow)
-
-        if mask is not None:
-            if mask.dim() == 3:
-                mask = mask.unsqueeze(1)
-            elif mask.dim() == 4 and mask.shape[1] != 1:
-                mask = mask.mean(dim=1, keepdim=True)
-
-            mask = F.interpolate(mask.float(), size=b.shape[-2:], mode="nearest")
-            target_b = b.shape[0]
-            if mask.shape[0] == 1 and target_b > 1:
-                mask = mask.expand(target_b, -1, -1, -1)
-            elif mask.shape[0] != target_b:
-                repeat_num = math.ceil(target_b / mask.shape[0])
-                mask = mask.repeat(repeat_num, 1, 1, 1)[:target_b]
-
-            mask = mask.to(device=b.device, dtype=b.dtype).clamp(0.0, 1.0)
-            b = b * (1 - mask)
 
         input_feat = torch.cat([a*b, b], dim = 1)
         new_flow = self.pred(input_feat)
         return self.final(new_flow)
         
-    def forward(self, flow, img, mask=None):
-        last_flow_mid = flow + self.flow_up(flow, img, mask)
+    def forward(self, flow, img):
+        last_flow_mid = flow + self.flow_up(flow, img)
         return last_flow_mid
-
         
 
 class FlowEstimator(nn.Module):
@@ -218,26 +179,10 @@ class FlowEstimator(nn.Module):
         self.flownet_deep = 3
         self.up_sample = Up_sample_module(32) # GFU
         
-    def get_flow(self, img0, img1, time_period, flownet_deep = None, skip_num = 0, M=None):
+    def get_flow(self, img0, img1, time_period, flownet_deep = None, skip_num = 0):
         if flownet_deep != None:
             self.flownet_deep = flownet_deep
         N, C, H, W = img0.shape
-
-        mask = None
-        if M is not None:
-            mask = M
-            if mask.dim() == 3:
-                mask = mask.unsqueeze(1)
-            elif mask.dim() == 4 and mask.shape[1] != 1:
-                # Collapse possible multi-channel masks into a single occlusion map.
-                mask = mask.mean(dim=1, keepdim=True)
-            if mask.shape[-2:] != (H, W):
-                mask = F.interpolate(mask, size=(H, W), mode="nearest")
-            mask = mask.to(device=img0.device, dtype=img0.dtype)
-            if mask.max() > 1.0:
-                mask = mask / 255.0
-            mask = mask.clamp(0.0, 1.0)
-
         down_rate = 2**(self.flownet_deep+2)
         last_flow = torch.zeros((2*N, 2, H//down_rate, W //down_rate)).to(img0.device)
         last_feat = torch.zeros((2*N, 64, H//down_rate, W//down_rate)).to(img0.device)
@@ -253,44 +198,20 @@ class FlowEstimator(nn.Module):
 
             f0 = self.flowgen.feat_pyramid(img0_)
             f1 = self.flowgen.feat_pyramid(img1_)
-            level_mask_motion = None
-            if mask is not None:
-                level_mask_motion = F.interpolate(mask, size=f0[-1].shape[-2:], mode="nearest")
-            last_flow, last_feat = self.flowgen.motion_estimator(f0[-1], f1[-1], last_feat, last_flow, level_mask_motion)
+            last_flow, last_feat = self.flowgen.motion_estimator(f0[-1], f1[-1], last_feat, last_flow)
 
             last_flow = resize(last_flow, 2.)*2.
-            # print shape of last_flow at each rate
-            # print(f"Rate: {rate}, last_flow shape: {last_flow.shape}")
 
             input_img = resize(torch.cat([img0_, img1_], dim=0), 1./2)
-            level_mask_up = None
-            if mask is not None:
-                level_mask_up = F.interpolate(mask, size=last_flow.shape[-2:], mode="nearest")
-                level_mask_up = torch.cat([level_mask_up, level_mask_up], dim=0)
-            last_flow = self.up_sample(last_flow, input_img, level_mask_up)
-            
-            # print shape of last_flow after upsampling
-            # print(f"Rate: {rate}, last_flow shape after upsampling: {last_flow.shape}")
-            # save last_flow at each rate for debugging
-            # last_flow_img = flow_viz.flow_to_image(last_flow[N:][0].permute(1, 2, 0).cpu().numpy())
-            # cv2.imwrite(f'./assets/flow/last_flow_rate_{rate}.png', last_flow_img[:, :, ::-1])
+            last_flow = self.up_sample(last_flow, input_img)
 
             last_feat = (resize(last_feat, 2.))*2.
             if rate == skip_num:
                 self.flow_base = last_flow.clone()
                 last_flow = resize(last_flow, 2**(skip_num+1))*(2**(skip_num+1))
-                # print(f"Skip connection at rate: {rate}, last_flow shape after resizing: {last_flow.shape}")
-
-                #  save last_flow at skip connection for debugging
-                # last_flow_skip_img = flow_viz.flow_to_image(last_flow[N:][0].permute(1, 2, 0).cpu().numpy())
-                #cv2.imwrite(f'./assets/flow/last_flow_skip_rate_{rate}.png', last_flow_skip_img[:, :, ::-1])
 
                 input_img = torch.cat([img0, img1], dim=0)
-                level_mask_up = None
-                if mask is not None:
-                    level_mask_up = F.interpolate(mask, size=last_flow.shape[-2:], mode="nearest")
-                    level_mask_up = torch.cat([level_mask_up, level_mask_up], dim=0)
-                last_flow = self.up_sample(last_flow, input_img, level_mask_up)
+                last_flow = self.up_sample(last_flow, input_img)
                 self.flow_large = last_flow.clone()
                 break
 

@@ -41,7 +41,7 @@ def main(args):
 
     n, c, h, w = img1.shape
 
-    from VTinker import modelVFI 
+    from VTinker.modified_VTinker import modelVFI 
     model = modelVFI()
 
     param = torch.load(args.model_file)

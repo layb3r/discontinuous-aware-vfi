@@ -2,12 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-
 from softsplat import softsplat
 from flow_estimator import FlowEstimator
-from disentangled_flow import DisentangledFlowRefiner, clear_global_overlap
-from helper import ResidualBlock, DownSampleBlock
-from torch.nn.functional import interpolate, l1_loss
 from einops import rearrange
 
 class DownBlock(nn.Module):
@@ -35,7 +31,7 @@ class UpBlock(nn.Module):
 
     def forward(self, x, skip):
         _, _, h, w = skip.shape
-        x = interpolate(x, size=(h, w), mode=self.interpolation)
+        x = F.interpolate(x, size=(h, w), mode=self.interpolation)
         x = self.act(self.conv1(x))
         x = self.act(self.conv2(torch.cat((x, skip), 1)))
         return x
@@ -178,7 +174,7 @@ class Synthesizer(nn.Module):
 
         return synth_out
 
-    def forward(self, x, flows, loss_fn=l1_loss, **kwargs):
+    def forward(self, x, flows):
         x, x_norm_stats = self.preprocess(rearrange(x, 'b c f h w -> b (f c) h w'))
         x = rearrange(x, 'b (f c) h w -> (f b) c h w', f=2)
         flows = rearrange(flows, 'b (f c) h w -> (f b) c h w', f=2)
@@ -187,8 +183,8 @@ class Synthesizer(nn.Module):
         for i in range(n_lvls - 1, -1, -1):
             # resize to current level.
             scale_factor = 1 / (2 ** i)
-            x_lvl = interpolate(x, scale_factor=scale_factor, mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias)
-            flows_lvl = interpolate(flows, scale_factor=scale_factor, mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias) * scale_factor
+            x_lvl = F.interpolate(x, scale_factor=scale_factor, mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias)
+            flows_lvl = F.interpolate(flows, scale_factor=scale_factor, mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias) * scale_factor
             
             # warp RGB image use softsplat
             warped_xt0_rgb, warped_xt1_rgb = softsplat.FunctionSoftsplat(
@@ -205,7 +201,7 @@ class Synthesizer(nn.Module):
             if i == n_lvls - 1:
                 xt = (warped_xt0_rgb + warped_xt1_rgb) / 2
             else:
-                xt = interpolate(xt, size=flows_lvl.shape[-2:], mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias)
+                xt = F.interpolate(xt, size=flows_lvl.shape[-2:], mode=self.interpolation, align_corners=self.align_corners, antialias=self.antialias)
             
             # warping use softsplat
             warped_xs_lvl = softsplat.FunctionSoftsplat(
@@ -221,25 +217,12 @@ class Synthesizer(nn.Module):
             xt = self.blender(torch.cat([xt, warped_xs_lvl, rearrange(flows_lvl, '(f b) c h w -> b (f c) h w', f=2)], dim=1))
             xt = self.decode2rgb(xt, warped_xt_rgb)
 
-        # if training mode: return loss
-        # if self.training and target is not None and loss_fn is not None:
-        #     loss = 0
-        #     target = target * 2 - 1  # make it [-1, 1] range for LPIPS
-        #     if self.normalize_inputs:
-        #         xt = self.postprocess(xt, stats=x_norm_stats) * 2 - 1  # make it back to [-1, 1] range for LPIPS
-        #     loss = loss_fn(xt, target)
-        #     return loss
-
         return self.postprocess(xt, stats=x_norm_stats)
 
-class DisentangledVFI(nn.Module):
-    def __init__(self, completion_fn=None):
-        super(DisentangledVFI, self).__init__()
+class VFI(nn.Module):
+    def __init__(self):
+        super(VFI, self).__init__()
         self.flow_estimator = FlowEstimator()
-        # self.refiner = DisentangledFlowRefiner(completion_fn=completion_fn)
-        # require grad of refiner is false
-        # for param in self.refiner.parameters():
-        #     param.requires_grad = False
         self.synthesis_net = Synthesizer()
 
     def _as_time_tensor(self, time_period, like_tensor):
@@ -265,21 +248,8 @@ class DisentangledVFI(nn.Module):
             raise ValueError("time_period must be scalar, [B], or [B,1,1,1].")
 
         return t
-
-    def _prepare_disentangle_masks(self, m0, m1):
-        m0_clean, m1_clean = clear_global_overlap(m0, m1)
-        m0_bin = (F.avg_pool2d(m0_clean.float(), 9, 1, 4) != 0).float()
-        m1_bin = (F.avg_pool2d(m1_clean.float(), 9, 1, 4) != 0).float()
-        m_xor = (m0_bin != m1_bin).float()
-        return m0_clean, m1_clean, m_xor
-
-    def forward(self, img0, img1, m0, m1, time_period, flownet_deep=None, skip_num=0):
-        if m0 is None or m1 is None:
-            raise ValueError("m0 and m1 are required for disentangled flow refinement.")
-
-        # m0_clean, m1_clean, m_xor = self._prepare_disentangle_masks(m0, m1)
-
-        # Use XOR occlusion as flow-estimation guidance mask (coarse-to-fine fade in FlowEstimator).
+    
+    def forward(self, img0, img1, time_period, flownet_deep=None, skip_num=0):
         _, flow_full = self.flow_estimator.get_flow(
             img0,
             img1,
@@ -290,8 +260,6 @@ class DisentangledVFI(nn.Module):
 
         flow_01 = flow_full[:, :2].contiguous()
         flow_10 = flow_full[:, 2:4].contiguous()
-
-        # flow_01_ref, flow_10_ref = self.refiner(img0, img1, flow_01, flow_10, m0_clean, m1_clean)
 
         t = self._as_time_tensor(time_period, img0)
         flow_0t = flow_01 * t
@@ -305,6 +273,6 @@ class DisentangledVFI(nn.Module):
         return It
 
     @torch.no_grad()
-    def inference(self, img0, img1, m0, m1, time_period, flownet_deep=None, skip_num=0):
-        It = self.forward(img0, img1, m0, m1, time_period, flownet_deep=flownet_deep, skip_num=skip_num)
+    def inference(self, img0, img1, time_period, flownet_deep=None, skip_num=0):
+        It = self.forward(img0, img1, time_period, flownet_deep=flownet_deep, skip_num=skip_num)
         return It

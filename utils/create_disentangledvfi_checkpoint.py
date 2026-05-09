@@ -108,11 +108,11 @@ def main():
     vtinker_sd = extract_state_dict(vtinker_payload)
 
     mapped_flow, skipped_flow = remap_state_dict(flow_sd, remap_flow_key)
-    mapped_vtinker, skipped_vtinker = remap_state_dict(vtinker_sd, remap_vtinker_key)
+    # mapped_vtinker, skipped_vtinker = remap_state_dict(vtinker_sd, remap_vtinker_key)
 
     merged_state = {}
     merged_state.update(mapped_flow)
-    merged_state.update(mapped_vtinker)
+    # merged_state.update(mapped_vtinker)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     dict = {
@@ -121,9 +121,9 @@ def main():
             "source_flow_ckpt": str(flow_path),
             "source_vtinker_ckpt": str(vtinker_path),
             "num_params_flow": len(mapped_flow),
-            "num_params_vtinker": len(mapped_vtinker),
+            # "num_params_vtinker": len(mapped_vtinker),
             "skipped_keys_flow": skipped_flow,
-            "skipped_keys_vtinker": skipped_vtinker,
+            # "skipped_keys_vtinker": skipped_vtinker,
             "note": (
                 "This is a partial initialization checkpoint. "
                 "Load with strict=False into DisentangledVFI."
@@ -144,7 +144,7 @@ def main():
 
     print("Saved:", out_path)
     print("Mapped flow keys:", len(mapped_flow), "Skipped:", skipped_flow)
-    print("Mapped VTinker keys:", len(mapped_vtinker), "Skipped:", skipped_vtinker)
+    # print("Mapped VTinker keys:", len(mapped_vtinker), "Skipped:", skipped_vtinker)
 
 
 if __name__ == "__main__":

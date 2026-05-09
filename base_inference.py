@@ -1,3 +1,4 @@
+"""python base_inference.py --sample ./dataset/0004 --save_dir ./assets/style_loss.png --model_file ./bin/model-150000_style.pkl"""
 import os
 import cv2
 import imageio
@@ -41,29 +42,26 @@ def main(args):
     img0 = (torch.from_numpy(img0.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to(DEVICE)
     img1 = (torch.from_numpy(img1.copy()).permute(2, 0, 1)/255.).unsqueeze(0).to(DEVICE)
 
-    M0_path = os.path.join(sample_path, "aggregate_masks", "M0.png")
-    M1_path = os.path.join(sample_path, "aggregate_masks", "M1.png")
+    # M0_path = os.path.join(sample_path, "aggregate_masks", "M0.png")
+    # M1_path = os.path.join(sample_path, "aggregate_masks", "M1.png")
 
-    M0 = cv2.imread(M0_path, cv2.IMREAD_GRAYSCALE)
-    M1 = cv2.imread(M1_path, cv2.IMREAD_GRAYSCALE)
-    M0 = (torch.from_numpy(M0.copy()).unsqueeze(0).unsqueeze(0)/255.).to(DEVICE) # shape [1, 1, H, W]
-    M1 = (torch.from_numpy(M1.copy()).unsqueeze(0).unsqueeze(0)/255.).to(DEVICE) # shape [1, 1, H, W]
+    # M0 = cv2.imread(M0_path, cv2.IMREAD_GRAYSCALE)
+    # M1 = cv2.imread(M1_path, cv2.IMREAD_GRAYSCALE)
+    # M0 = (torch.from_numpy(M0.copy()).unsqueeze(0).unsqueeze(0)/255.).to(DEVICE) # shape [1, 1, H, W]
+    # M1 = (torch.from_numpy(M1.copy()).unsqueeze(0).unsqueeze(0)/255.).to(DEVICE) # shape [1, 1, H, W]
 
     n, c, h, w = img1.shape
 
-    from VTinker import modelVFI 
-    model = modelVFI()
+    # from DisentangledVFI import DisentangledVFI
+    from base.baseVFI import VFI as DisentangledVFI
+    model = DisentangledVFI()
 
     param = torch.load(args.model_file)
-    tmp_param = model.state_dict()
-    for kk,v in param.items():
-        k = kk[7:]
-        if k in tmp_param:
-            tmp_param[k] = v
-        else:
-            print(k, "  Not load!!!")
+    
+    if isinstance(param, dict) and 'state_dict' in param:
+        param = param['state_dict']
 
-    model.load_state_dict(tmp_param)
+    model.load_state_dict(param)
     # model = model.half()
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(trainable_params)
@@ -80,13 +78,9 @@ def main(args):
         img1 = F.pad(img1, padding, "constant", 0.5)
 
     with torch.no_grad():
-        img, warped_feature = model.inference(img0, img1, M0, M1, inference_time, flow_deep, skip_num)
+        img = model.inference(img0, img1, inference_time, flow_deep, skip_num)
         img = torch.clamp(img.float(), 0, 1)
         imageio.imsave(args.save_dir, change4save(img[:, :, :h, :w]))
-
-        # save warped feature for visualization
-        # warped_feature = torch.clamp(warped_feature.float(), 0, 1)
-        # imageio.imsave(args.save_dir.replace('.jpg', '_warped_feature.jpg'), change4save(warped_feature[:, :, :h, :w]))
 
 if __name__ == "__main__":
 
@@ -102,10 +96,9 @@ if __name__ == "__main__":
             help="dir to save interpolated frame")
     
     parser.add_argument('--model_file', type=str,
-            default=r"./bin/VTinker.pkl",
-            help='weight of VTinker')
+            default=r"./weights/DisentangledVFI_test_checkpoint.pth",
+            help='weight of DisentangledVFI')
     
     args = parser.parse_args()
 
     main(args)
-    # python inference.py --sample ./dataset/0001 --save_dir ./assets/results.jpg --model_file ./bin/VTinker.pkl

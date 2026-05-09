@@ -19,7 +19,7 @@ from calc_metric import Metrics
 import torchvision.transforms.functional as TF
 import os.path as osp
 
-from VTinker import modelVFI 
+from VTinker.modified_VTinker import modelVFI 
 model = modelVFI()
 tmp_param = model.state_dict()
 

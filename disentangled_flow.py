@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from flow_completion import FCNet
+import cv2
 
 def clear_global_overlap(mask1, mask2):
     vals1 = torch.unique(mask1)
@@ -12,6 +13,7 @@ def clear_global_overlap(mask1, mask2):
     common_vals = common_vals[common_vals != 0]
 
     if common_vals.numel() == 0:
+        print("NO OVERLAP CASE IN clear_global_overlap!")
         return mask1, mask2
 
     result1 = mask1.clone()
@@ -67,15 +69,9 @@ class DisentangledFlowRefiner(nn.Module):
         M1_bin = (M1_bin != 0)
 
         # Disentanglement masks.
-        M_xor_1c = (M0_bin != M1_bin).float()  # appearing OR disappearing
-        # M_xor_1c = F.avg_pool2d(M_xor_1c, 9, 1, 4)  # dilate for better FCNet completion
-        # M_xor_1c = (M_xor_1c != 0).float()
         A_1c = ((~M0_bin) & M1_bin).float()  # appearing in I1
-        # A_1c = F.avg_pool2d(A_1c, 9, 1, 4)
-        # A_1c = (A_1c != 0).float()
         D_1c = (M0_bin & (~M1_bin)).float()  # disappearing in I0
-        # D_1c = F.avg_pool2d(D_1c, 9, 1, 4)
-        # D_1c = (D_1c != 0).float()
+        M_xor_1c = (A_1c + D_1c).clamp(0, 1)  # union of appearing and disappearing
 
         # M_pair = (M0_bin & M1_bin).float()  # persistent overlays
         # M__pair = F.avg_pool2d(M_pair, 9, 1, 4)

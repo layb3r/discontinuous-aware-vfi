@@ -1,3 +1,4 @@
+"""python inference.py --sample ./dataset/0001 --save_dir ./assets/results.jpg --model_file ./bin/VTinker.pkl"""
 import os
 import cv2
 import imageio
@@ -51,16 +52,19 @@ def main(args):
 
     n, c, h, w = img1.shape
 
-    from DisentangledVFI import DisentangledVFI
-    # from base.baseVFI import VFI as DisentangledVFI
-    model = DisentangledVFI()
+    from VTinker.modified_VTinker import modelVFI 
+    model = modelVFI()
 
     param = torch.load(args.model_file)
-    
-    if isinstance(param, dict) and 'state_dict' in param:
-        param = param['state_dict']
+    tmp_param = model.state_dict()
+    for kk,v in param.items():
+        k = kk[7:]
+        if k in tmp_param:
+            tmp_param[k] = v
+        else:
+            print(k, "  Not load!!!")
 
-    model.load_state_dict(param)
+    model.load_state_dict(tmp_param)
     # model = model.half()
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(trainable_params)
@@ -77,9 +81,13 @@ def main(args):
         img1 = F.pad(img1, padding, "constant", 0.5)
 
     with torch.no_grad():
-        img = model.inference(img0, img1, M0, M1, inference_time, flow_deep, skip_num)
+        img, warped_feature = model.inference(img0, img1, M0, M1, inference_time, flow_deep, skip_num)
         img = torch.clamp(img.float(), 0, 1)
         imageio.imsave(args.save_dir, change4save(img[:, :, :h, :w]))
+
+        # save warped feature for visualization
+        # warped_feature = torch.clamp(warped_feature.float(), 0, 1)
+        # imageio.imsave(args.save_dir.replace('.jpg', '_warped_feature.jpg'), change4save(warped_feature[:, :, :h, :w]))
 
 if __name__ == "__main__":
 
@@ -95,10 +103,9 @@ if __name__ == "__main__":
             help="dir to save interpolated frame")
     
     parser.add_argument('--model_file', type=str,
-            default=r"./weights/DisentangledVFI_test_checkpoint.pth",
-            help='weight of DisentangledVFI')
+            default=r"./bin/VTinker.pkl",
+            help='weight of VTinker')
     
     args = parser.parse_args()
 
     main(args)
-    # python DisentangledVFI_inference.py --sample ./dataset/0001 --save_dir ./assets/d_results.png --model_file ./bin/DisentangledVFI_checkpoint.pth

@@ -18,11 +18,13 @@ class AugVimeo(Dataset):
         self.has_crop_aug = has_crop_aug
         self.crop_h = 256
         self.crop_w = 256
-        self.load_data()
-        self.image_root = os.path.join(self.data_root, 'sequences')
+        if self.dataset_name == 'train':
+            self.image_root = os.path.join(self.data_root, 'train')
+        else:
+            self.image_root = os.path.join(self.data_root, 'test')
         # self.flow_root = os.path.join(self.data_root, 'flow')
-        train_fn = os.path.join(self.data_root, 'trainlist.txt')
-        test_fn = os.path.join(self.data_root, 'testlist.txt')
+        train_fn = os.path.join(self.data_root, 'tri_trainlist.txt')
+        test_fn = os.path.join(self.data_root, 'tri_testlist.txt')
         with open(train_fn, 'r') as f:
             self.trainlist = f.read().splitlines()
         with open(test_fn, 'r') as f:
@@ -37,7 +39,7 @@ class AugVimeo(Dataset):
 
     def load_data(self):
         if self.dataset_name == 'train':
-            self.meta_data = self.trainlist
+            self.meta_data = self.trainlist # FIXXXXXXXXXXXXXXXXXXXX
         else:
             self.meta_data = self.testlist
 
@@ -70,11 +72,11 @@ class AugVimeo(Dataset):
         sample_dir = self.meta_data[index]
         masks_dir = os.path.join(sample_dir, "aggregate_masks")
 
-        img0 = self._read_image(os.path.join(sample_dir, "I0.png"))
-        gt = self._read_image(os.path.join(sample_dir, "I_0.5_copied.png"))
-        img1 = self._read_image(os.path.join(sample_dir, "I1.png"))
-        m0 = self._read_mask(os.path.join(masks_dir, "M0.png"))
-        m1 = self._read_mask(os.path.join(masks_dir, "M1.png"))
+        img0 = self._read_image(os.path.join(self.image_root, sample_dir, "I0.png"))
+        gt = self._read_image(os.path.join(self.image_root, sample_dir, "I_0.5_copied.png"))
+        img1 = self._read_image(os.path.join(self.image_root, sample_dir, "I1.png"))
+        m0 = self._read_mask(os.path.join(self.image_root, masks_dir, "M0.png"))
+        m1 = self._read_mask(os.path.join(self.image_root, masks_dir, "M1.png"))
         return img0, gt, img1, m0, m1
 
     def __getitem__(self, index):

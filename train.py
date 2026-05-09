@@ -98,10 +98,13 @@ def train(ppl, dataset_cfg_dict, optimizer_cfg_dict):
 
     time_stamp = time.time()
     step_per_epoch = len(train_data)
+    print(f"Data length: {len(train_data)}, Step per epoch: {step_per_epoch}, Total step: {total_step}")
     epoch_counter = 0
     last_epoch = False
 
     while step <  total_step+1:
+        if step == 2:
+                print("working!")
         if step + step_per_epoch >  total_step:
             last_epoch = True
 
@@ -124,16 +127,18 @@ def train(ppl, dataset_cfg_dict, optimizer_cfg_dict):
 
             learning_rate = get_learning_rate(total_step, step, init_lr, min_lr)
             pred, extra_dict = ppl.train_one_iter(
-                    img0, img1, gt, m0, m1,
+                    img0, img1, m0, m1, gt,
                     jindu = step/total_step,
-                    learning_rate=learning_rate)
+                    learning_rate=learning_rate, loss_type=loss_type)
             train_time_interval = time.time() - time_stamp
             time_stamp = time.time()
 
             if step % 100 == 1 and LOCAL_RANK == 0:
                 writer.add_scalar(
-                        '1-loss_interp_l2', extra_dict["loss_interp_l2"] , step)
-                writer.add_scalar('2-learning_rate', learning_rate, step)
+                        '1-loss_interp_l2', extra_dict["loss_interp_l2"], step)
+                # writer.add_scalar('2-loss_forward', extra_dict["loss_forward"], step)
+                # writer.add_scalar('3-loss_backward', extra_dict["loss_backward"], step)
+                writer.add_scalar('4-learning_rate', learning_rate, step)
                 ppl.save_model(model_log_dir, LOCAL_RANK)
             
             if LOCAL_RANK == 0:
@@ -237,8 +242,8 @@ def init_exp_env():
         logger.add(os.path.join(THIS_EXP_LOG_DIR, "runtime.log"))
 
     # init cuda env
-    torch.distributed.init_process_group(backend="nccl", world_size=WORLD_SIZE)
-    torch.cuda.set_device(LOCAL_RANK)
+    # torch.distributed.init_process_group(backend="nccl", world_size=WORLD_SIZE)
+    # torch.cuda.set_device(LOCAL_RANK)
     seed = 1234
     random.seed(seed)
     np.random.seed(seed)
@@ -253,9 +258,9 @@ if __name__ == "__main__":
             description='train VTinker for video frame interpolation')
 
     # => args for basic information
-    parser.add_argument('--exp_name', default="upr-base", type=str,
+    parser.add_argument('--exp_name', default="disentangled", type=str,
             help='experiment name, will be used to save all generated files')
-    parser.add_argument('--train_log_root', default="../upr-train-log", type=str,
+    parser.add_argument('--train_log_root', default="./disentangled-log", type=str,
             help='root dir to save all training logs')
     parser.add_argument('--resume', default=False, type=bool,
             help='resume from previously saved experiment logs')
@@ -362,6 +367,8 @@ if __name__ == "__main__":
     # => init the pipeline and train the pipeline
     ppl = Pipeline(
             model_cfg_dict, optimizer_cfg_dict,
-            LOCAL_RANK, training=True, resume=RESUME, upr_redesgin_path = r"./checkpoints/UPR_ReDesgin.pkl")
+            LOCAL_RANK, training=True, resume=RESUME)
     logger.info("start the training task: %s" % EXP_NAME)
     train(ppl, dataset_cfg_dict, optimizer_cfg_dict)
+
+    # python train.py --exp_name disentangled --train_log_root disentangled-log --data_root ./dataset/example_augvimeo --batch_size 8 --steps 100000 --load_pretrain True --model_file ./bin/DisentangledVFI_checkpoint.pth

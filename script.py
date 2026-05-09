@@ -257,7 +257,7 @@ def test_disentangledvfi():
                 "note": "This is a temporal checkpoint for testing. It is not intended for actual use.",
             },
          },
-         'weights/DisentangledVFI_test_checkpoint.pth',
+         'weights/base_VFI.pth',
     )
 
     # print model.state_dict() keys:
@@ -267,7 +267,7 @@ def test_disentangledvfi():
 
 def load_disentangledvfi_checkpoint():
     model = DisentangledVFI()
-    checkpoint = torch.load('weights/DisentangledVFI_test_checkpoint.pth')
+    checkpoint = torch.load('weights/base_VFI.pth')
     print(checkpoint["state_dict"].keys())
 
     tmp_param = model.state_dict()
@@ -285,6 +285,6 @@ if __name__ == "__main__":
     # load_pkl('UPR_ReDesgin.pkl')
     # flow('dataset/0001/I0.png', 'dataset/0001/I1.png')
     # flow_completion('dataset/0001')
-    # calc_metrics('./assets/pred', './assets/gt')
+    calc_metrics('./assets/pred', './assets/gt')
     # test_disentangledvfi()
-    load_disentangledvfi_checkpoint()
+    # load_disentangledvfi_checkpoint()
